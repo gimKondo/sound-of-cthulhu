@@ -1,6 +1,11 @@
 # sound-of-cthulhu
 Sound management tool for TRPG session
 
+## Tools version
+- Node.js 11.13.0
+- npm 6.9.0
+- vue-cli 3.5.5
+
 ## Project setup
 ```
 yarn install
@@ -8,12 +13,12 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn run serve
+yarn electron:serve
 ```
 
 ### Compiles and minifies for production
 ```
-yarn run build
+yarn electron:build
 ```
 
 ### Run your tests
