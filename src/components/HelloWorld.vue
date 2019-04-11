@@ -1,6 +1,9 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
+    <div v-for="name in names">
+      <SoundBox :name="name"/>
+    </div>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -33,10 +36,20 @@
 </template>
 
 <script>
+import SoundBox from '@/components/SoundBox.vue'
+
 export default {
   name: 'HelloWorld',
+  components: {
+    SoundBox
+  },
   props: {
     msg: String
+  },
+  data () {
+    return {
+      names: ['aaaa', 'bbbb', 'cc']
+    }
   }
 }
 </script>
