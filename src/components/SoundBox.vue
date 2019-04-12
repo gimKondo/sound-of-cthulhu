@@ -1,7 +1,9 @@
 <template>
   <div class="sound-box">
-    <div>曲名:</div>{{name}}<br/>
-    <div>メモ</div>
+    <v-card>
+      <v-card-title class="font-weight-bold">{{name}}</v-card-title>
+      <div>メモ</div>
+    </v-card>
   </div>
 </template>
 
