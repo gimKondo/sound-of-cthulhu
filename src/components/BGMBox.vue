@@ -1,6 +1,6 @@
 <template>
   <div class="bgm-box">
-    <v-card>
+    <v-card v-on:click="playSound">
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
     </v-card>
@@ -12,6 +12,13 @@ export default {
   name: 'BGMBox',
   props: {
     name: String
+  },
+  methods: {
+    playSound: function () {
+      alert('playing sound: ' + this.name)
+      let audio = new Audio(require('path').resolve('../sound/bgm_sample.mp3'))
+      audio.play()
+    }
   }
 }
 </script>
