@@ -1,6 +1,5 @@
 <template>
   <v-container>
-    <router-link to="/">Home</router-link>
     <v-layout wrap>
       <v-flex xs10>
         <v-layout wrap>

@@ -1,14 +1,14 @@
 <template>
   <v-app dark>
     <v-toolbar app>
-      <v-toolbar-title class="headline text-uppercase">
-        <span>Vuetify</span>
-        <span class="font-weight-light">MATERIAL DESIGN</span>
+      <v-toolbar-title class="headline">
+        <router-link to="/" class="header-logo">Sound of Cthulhu</router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
+      <router-link to="/about" class="header-about">About</router-link>
       <v-btn
         flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        href="https://github.com/gimKondo/sound-of-cthulhu/releases/latest"
         target="_blank"
       >
         <span class="mr-2">Latest Release</span>
@@ -31,3 +31,15 @@ export default {
   }
 }
 </script>
+
+<style>
+.header-logo {
+  color:firebrick;
+  font-weight: bold;
+  text-decoration: none;
+}
+.header-about {
+  color:white;
+  text-decoration: none;
+}
+</style>
