@@ -1,29 +1,45 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app dark>
+    <v-toolbar app>
+      <v-toolbar-title class="headline">
+        <router-link to="/" class="header-logo">Sound of Cthulhu</router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <router-link to="/about" class="header-about">About</router-link>
+      <v-btn
+        flat
+        href="https://github.com/gimKondo/sound-of-cthulhu/releases/latest"
+        target="_blank"
+      >
+        <span class="mr-2">Latest Release</span>
+      </v-btn>
+    </v-toolbar>
+
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+export default {
+  name: 'App',
+  data () {
+    return {
+      //
     }
   }
+}
+</script>
+
+<style>
+.header-logo {
+  color:firebrick;
+  font-weight: bold;
+  text-decoration: none;
+}
+.header-about {
+  color:white;
+  text-decoration: none;
 }
 </style>
