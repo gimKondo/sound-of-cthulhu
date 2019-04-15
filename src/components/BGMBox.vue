@@ -18,6 +18,6 @@ export default {
 
 <style>
 .bgm-box-title {
-  background-color: aquamarine
+  background-color:darkslateblue
 }
 </style>

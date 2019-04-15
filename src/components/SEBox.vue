@@ -18,6 +18,6 @@ export default {
 
 <style>
 .se-box-title {
-  background-color:darkkhaki
+  background-color:darkolivegreen
 }
 </style>
