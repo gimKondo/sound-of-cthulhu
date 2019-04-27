@@ -8,10 +8,11 @@
 </template>
 
 <script>
+const path = require('path');
 export default {
   name: 'BGMBox',
   props: {
-    name: String
+    filepath: String
   },
   methods: {
     playSound: function () {
@@ -22,7 +23,7 @@ export default {
       const toArrayBuffer = function (buf) {
         return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
       }
-      fs.readFile('public/bgm_sample.mp3', (err, data) => {
+      fs.readFile(this.filepath, (err, data) => {
         context.decodeAudioData(toArrayBuffer(data), function (buffer) {
           const source = context.createBufferSource()
           source.buffer = buffer
@@ -31,12 +32,18 @@ export default {
         }).then()
       })
     }
+  },
+  computed: {
+    name: function() {
+      return path.basename(this.filepath)
+    }
   }
 }
 </script>
 
 <style>
 .bgm-box-title {
-  background-color:darkslateblue
+  background-color:darkslateblue;
+  word-wrap: break-word;
 }
 </style>

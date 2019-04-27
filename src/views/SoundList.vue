@@ -3,8 +3,8 @@
     <v-layout wrap>
       <v-flex xs10>
         <v-layout wrap>
-          <v-flex xs6 md4 pa-1 v-for="(name, index) in bgmNames" :key="index">
-            <BGMBox :name="name"/>
+          <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
+            <BGMBox :filepath="filepath"/>
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
         </v-layout>
@@ -23,6 +23,11 @@
 <script>
 import BGMBox from '@/components/BGMBox.vue'
 import SEBox from '@/components/SEBox.vue'
+
+const remote = require('electron').remote;
+const {dialog} = require('electron').remote;
+const fs = require('fs');
+
 export default {
   name: 'SoundList',
   components: {
@@ -33,11 +38,23 @@ export default {
   },
   methods: {
     addBGM: function () {
-      alert('open new BGM file')
+      let window = remote.getCurrentWindow()
+      let options = {
+        title: 'File open',
+        filters: [
+          { name: 'sound', extensions: ['mp3']}
+        ],
+        properties: ['openFile']
+      }
+      dialog.showOpenDialog(window, options,
+        (filenames) => {
+          this.bgmFiles.push(filenames[0])
+        }
+      )
     }
   },
   data: () => ({
-    bgmNames: ['hoge', 'fuga', 'hogera'],
+    bgmFiles: ['hoge', 'fuga', 'hogera'],
     seNames: ['bang', 'bomb']
   })
 }
