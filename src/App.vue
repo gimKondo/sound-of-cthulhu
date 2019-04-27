@@ -2,7 +2,10 @@
   <v-app dark>
     <v-toolbar app>
       <v-toolbar-title class="headline">
-        <router-link to="/" class="header-logo">Sound of Cthulhu</router-link>
+        <router-link to="/" class="header-logo">
+          <img src="../icons/Images/ios/AppIcon.appiconset/Icon-App-29x29@1x.png" class="header-icon"/>
+          Sound of Cthulhu
+        </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <router-link to="/about" class="header-about">About</router-link>
@@ -37,6 +40,10 @@ export default {
   color:firebrick;
   font-weight: bold;
   text-decoration: none;
+}
+.header-icon {
+  padding-top: 0.5em;
+  padding-right: 0.5em;
 }
 .header-about {
   color:white;
