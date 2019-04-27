@@ -6,6 +6,7 @@
           <v-flex xs6 md4 pa-1 v-for="(name, index) in bgmNames" :key="index">
             <BGMBox :name="name"/>
           </v-flex>
+          <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
         </v-layout>
       </v-flex>
       <v-flex xs2>
@@ -29,6 +30,11 @@ export default {
     SEBox
   },
   props: {
+  },
+  methods: {
+    addBGM: function () {
+      alert('open new BGM file')
+    }
   },
   data: () => ({
     bgmNames: ['hoge', 'fuga', 'hogera'],
