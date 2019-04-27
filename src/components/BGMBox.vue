@@ -16,8 +16,20 @@ export default {
   methods: {
     playSound: function () {
       alert('playing sound: ' + this.name)
-      let audio = new Audio(require('path').resolve('../sound/bgm_sample.mp3'))
-      audio.play()
+      const context = new AudioContext()
+      const electron = require('electron')
+      const fs = electron.remote.require('fs')
+      const toArrayBuffer = function (buf) {
+        return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength)
+      }
+      fs.readFile('public/bgm_sample.mp3', (err, data) => {
+        context.decodeAudioData(toArrayBuffer(data), function (buffer) {
+          const source = context.createBufferSource()
+          source.buffer = buffer
+          source.connect(context.destination)
+          source.start(0)
+        }).then()
+      })
     }
   }
 }
