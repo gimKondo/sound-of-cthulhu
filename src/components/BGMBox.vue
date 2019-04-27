@@ -3,8 +3,8 @@
     <v-card>
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
-      <v-icon @click="playSound" v-if="!isPlaying">play_arrow</v-icon>
-      <v-icon @click="pauseSound" v-else>pause</v-icon>
+      <v-icon large @click="playSound" v-if="!isPlaying">play_circle_outline</v-icon>
+      <v-icon large @click="pauseSound" v-else>pause_circle_outline</v-icon>
     </v-card>
   </div>
 </template>
@@ -55,14 +55,15 @@ export default {
     pauseSound () {
       context.suspend().then()
       this.isPlaying = false
-      // console.log(context.baseLatency)
-      // console.log(context.outputLatency)
     }
   }
 }
 </script>
 
 <style>
+.v-icon {
+  padding: 4px
+}
 .bgm-box-title {
   background-color:darkslateblue
 }
