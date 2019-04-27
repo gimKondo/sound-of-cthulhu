@@ -3,7 +3,7 @@
     <v-card>
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
-      <v-icon @click="playSound" v-if="!playing">play_arrow</v-icon>
+      <v-icon @click="playSound" v-if="!isPlaying">play_arrow</v-icon>
       <v-icon @click="pauseSound" v-else>pause</v-icon>
     </v-card>
   </div>
@@ -44,17 +44,19 @@ export default {
       if (!this.source) {
         return
       }
-      if (this.started) {
+      if (this.isStarted) {
         context.resume().then()
       } else {
         this.source.start(0)
-        this.started = true
+        this.isStarted = true
       }
-      this.playing = true
+      this.isPlaying = true
     },
     pauseSound () {
       context.suspend().then()
-      this.playing = false
+      this.isPlaying = false
+      // console.log(context.baseLatency)
+      // console.log(context.outputLatency)
     }
   }
 }
