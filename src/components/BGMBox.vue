@@ -20,24 +20,30 @@ export default {
   },
   data () {
     return {
+      source: null,
       playing: false
     }
   },
+  created () {
+    fs.readFile('public/bgm_sample.mp3', (error, data) => {
+      if (error) {
+        console.error(error)
+      }
+      const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
+      context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
+        const source = context.createBufferSource()
+        source.buffer = decodedSoundBuffer
+        source.connect(context.destination)
+        this.source = source
+      }).then()
+    })
+  },
   methods: {
     playSound () {
-      fs.readFile('public/bgm_sample.mp3', (error, data) => {
-        if (error) {
-          console.error(error)
-        }
-        const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-        context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-          const source = context.createBufferSource()
-          source.buffer = decodedSoundBuffer
-          source.connect(context.destination)
-          source.start(0)
-          this.playing = true
-        }).then()
-      })
+      if (this.source) {
+        this.source.start(0)
+        this.playing = true
+      }
     }
   }
 }
