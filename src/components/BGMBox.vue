@@ -1,10 +1,10 @@
 <template>
   <div class="bgm-box">
-    <v-card v-on:click="playSound">
+    <v-card>
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
-      <v-icon v-if="!playing">play_arrow</v-icon>
-      <v-icon v-else>pause</v-icon>
+      <v-icon @click="playSound" v-if="!playing">play_arrow</v-icon>
+      <v-icon @click="pauseSound" v-else>pause</v-icon>
     </v-card>
   </div>
 </template>
@@ -21,6 +21,7 @@ export default {
   data () {
     return {
       source: null,
+      started: false,
       playing: false
     }
   },
@@ -41,9 +42,18 @@ export default {
   methods: {
     playSound () {
       if (this.source) {
-        this.source.start(0)
+        if (this.started) {
+          context.resume().then()
+        } else {
+          this.source.start(0)
+          this.started = true
+        }
         this.playing = true
       }
+    },
+    pauseSound () {
+      context.suspend().then()
+      this.playing = false
     }
   }
 }
