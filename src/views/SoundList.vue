@@ -24,9 +24,8 @@
 import BGMBox from '@/components/BGMBox.vue'
 import SEBox from '@/components/SEBox.vue'
 
-const remote = require('electron').remote;
-const {dialog} = require('electron').remote;
-const fs = require('fs');
+const remote = require('electron').remote
+const { dialog } = require('electron').remote
 
 export default {
   name: 'SoundList',
@@ -42,7 +41,7 @@ export default {
       let options = {
         title: 'File open',
         filters: [
-          { name: 'sound', extensions: ['mp3']}
+          { name: 'sound', extensions: ['mp3'] }
         ],
         properties: ['openFile']
       }
@@ -54,7 +53,7 @@ export default {
     }
   },
   data: () => ({
-    bgmFiles: ['hoge', 'fuga', 'hogera'],
+    bgmFiles: ['public/bgm_sample.mp3', 'public/bgm_sample.mp3', 'public/bgm_sample.mp3'],
     seNames: ['bang', 'bomb']
   })
 }
