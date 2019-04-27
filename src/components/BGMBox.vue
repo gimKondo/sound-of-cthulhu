@@ -21,8 +21,8 @@ export default {
   data () {
     return {
       source: null,
-      started: false,
-      playing: false
+      isStarted: false,
+      isPlaying: false
     }
   },
   created () {
@@ -41,15 +41,16 @@ export default {
   },
   methods: {
     playSound () {
-      if (this.source) {
-        if (this.started) {
-          context.resume().then()
-        } else {
-          this.source.start(0)
-          this.started = true
-        }
-        this.playing = true
+      if (!this.source) {
+        return
       }
+      if (this.started) {
+        context.resume().then()
+      } else {
+        this.source.start(0)
+        this.started = true
+      }
+      this.playing = true
     },
     pauseSound () {
       context.suspend().then()
