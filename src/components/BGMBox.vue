@@ -26,7 +26,7 @@ export default {
     }
   },
   created () {
-    fs.readFile('public/bgm_sample.mp3', (error, data) => {
+    fs.readFile('public/short_sample.mp3', (error, data) => {
       if (error) {
         console.error(error)
       }
@@ -34,6 +34,7 @@ export default {
       context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
         const source = context.createBufferSource()
         source.buffer = decodedSoundBuffer
+        source.loop = true
         source.connect(context.destination)
         this.source = source
       }).then()
