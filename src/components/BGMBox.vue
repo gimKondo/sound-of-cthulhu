@@ -49,6 +49,7 @@ export default {
         const source = this.context.createBufferSource()
         source.buffer = decodedSoundBuffer
         source.connect(this.context.destination)
+        source.loop = true
         this.endTime = source.buffer.duration
         this.context.source = source
         this.context.suspend()
