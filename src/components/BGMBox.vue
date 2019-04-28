@@ -4,15 +4,18 @@
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
       <v-layout>
-        <v-flex xs-3>
+        <v-flex xs2>
           <v-btn @click="togglePlaying" small fab color="grey darken-2">
             <v-icon v-if="!isPlaying">play_arrow</v-icon>
             <v-icon v-else>pause</v-icon>
           </v-btn>
         </v-flex>
-        <v-flex xs-9>
-          <v-card-text class="subheading">{{progressTimeText()}}</v-card-text>
+        <v-flex xs10>
+          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume"></v-slider>
         </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-chip class="">{{progressTimeText()}}</v-chip>
       </v-layout>
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
@@ -34,6 +37,7 @@ export default {
       context: new AudioContext(),
       isStarted: false,
       isPlaying: false,
+      volume: 50,
       currentTime: 0,
       endTime: 0,
       intervalId: null
@@ -106,6 +110,17 @@ export default {
 </script>
 
 <style>
+.v-slider {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.v-input--slider {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.v-input--slider .v-input__slot {
+  margin-bottom: 0;
+}
 .v-progress-linear {
   margin: 0;
 }
