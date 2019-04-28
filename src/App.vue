@@ -3,8 +3,7 @@
     <v-toolbar app>
       <v-toolbar-title class="headline">
         <router-link to="/" class="header-logo">
-          <img src="../icons/Images/ios/AppIcon.appiconset/Icon-App-29x29@1x.png" class="header-icon"/>
-          Sound of Cthulhu
+          <img src="../icons/Images/logo1.png" class="header-icon"/>
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
