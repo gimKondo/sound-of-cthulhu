@@ -98,6 +98,9 @@ export default {
 </script>
 
 <style>
+.v-progress-linear {
+  margin: 0;
+}
 .bgm-box-title {
   background-color:darkslateblue;
   word-wrap: break-word;
