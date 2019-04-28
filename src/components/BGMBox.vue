@@ -51,6 +51,7 @@ export default {
         source.connect(this.context.destination)
         this.endTime = source.buffer.duration
         this.context.source = source
+        this.context.suspend()
       }).then()
     })
   },
@@ -62,9 +63,8 @@ export default {
       if (!this.context.source) {
         return
       }
-      if (this.isStarted) {
-        this.context.resume().then()
-      } else {
+      this.context.resume().then()
+      if (!this.isStarted) {
         this.context.source.start(0)
         this.isStarted = true
       }
