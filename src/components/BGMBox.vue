@@ -10,13 +10,14 @@
 </template>
 
 <script>
+const path = require('path')
 const context = new AudioContext()
 const electron = require('electron')
 const fs = electron.remote.require('fs')
 export default {
   name: 'BGMBox',
   props: {
-    name: String
+    filepath: String
   },
   data () {
     return {
@@ -26,7 +27,7 @@ export default {
     }
   },
   created () {
-    fs.readFile('public/short_sample.mp3', (error, data) => {
+    fs.readFile(this.filepath, (error, data) => {
       if (error) {
         console.error(error)
       }
@@ -57,6 +58,11 @@ export default {
       context.suspend().then()
       this.isPlaying = false
     }
+  },
+  computed: {
+    name: function () {
+      return path.basename(this.filepath)
+    }
   }
 }
 </script>
@@ -66,6 +72,7 @@ export default {
   padding: 4px
 }
 .bgm-box-title {
-  background-color:darkslateblue
+  background-color:darkslateblue;
+  word-wrap: break-word;
 }
 </style>
