@@ -3,8 +3,12 @@
     <v-card>
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
-      <v-icon large @click="playSound" v-if="!isPlaying">play_circle_outline</v-icon>
-      <v-icon large @click="pauseSound" v-else>pause_circle_outline</v-icon>
+      <v-layout>
+        <v-flex xs-3>
+          <v-icon v-ripple large @click="playSound" v-if="!isPlaying">play_circle_outline</v-icon>
+          <v-icon v-ripple large @click="pauseSound" v-else>pause_circle_outline</v-icon>
+        </v-flex>
+      </v-layout>
     </v-card>
   </div>
 </template>
