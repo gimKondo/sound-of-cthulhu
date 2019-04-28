@@ -5,8 +5,10 @@
       <div>メモ</div>
       <v-layout>
         <v-flex xs-3>
-          <v-icon v-ripple large @click="playSound" v-if="!isPlaying">play_circle_outline</v-icon>
-          <v-icon v-ripple large @click="pauseSound" v-else>pause_circle_outline</v-icon>
+          <v-btn fab small color="grey darken-2">
+            <v-icon @click="playSound" v-if="!isPlaying">play_arrow</v-icon>
+            <v-icon @click="pauseSound" v-else>pause</v-icon>
+          </v-btn>
         </v-flex>
       </v-layout>
     </v-card>
