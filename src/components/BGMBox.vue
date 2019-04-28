@@ -10,6 +10,9 @@
             <v-icon @click="pauseSound" v-else>pause</v-icon>
           </v-btn>
         </v-flex>
+        <v-flex xs-9>
+          <v-card-text class="subheading">{{progressTimeText()}}</v-card-text>
+        </v-flex>
       </v-layout>
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
@@ -31,7 +34,9 @@ export default {
     return {
       source: null,
       isStarted: false,
-      isPlaying: false
+      isPlaying: false,
+      currentTime: 0,
+      intervalId: null
     }
   },
   created () {
@@ -48,6 +53,9 @@ export default {
       }).then()
     })
   },
+  beforeDestroy () {
+    clearInterval(this.intervalId)
+  },
   methods: {
     playSound () {
       if (!this.source) {
@@ -59,11 +67,25 @@ export default {
         this.source.start(0)
         this.isStarted = true
       }
+      this.intervalId = setInterval(() => {
+        this.currentTime = context.currentTime;
+      }, 200)
       this.isPlaying = true
     },
     pauseSound () {
       context.suspend().then()
+      clearInterval(this.intervalId)
       this.isPlaying = false
+    },
+    progressTimeText () {
+      const pad2Zero = (value) => {
+        return ('00' + value).slice(-2)
+      }
+      const convert = (time) => {
+        return `${pad2Zero(Math.floor(time / 60))}:${pad2Zero(Math.floor(time % 60))}`
+      }
+      const endTime = this.source.buffer.duration
+      return `${convert(this.currentTime % endTime)} / ${convert(endTime)}`
     }
   },
   computed: {
