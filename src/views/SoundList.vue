@@ -4,7 +4,7 @@
       <v-flex xs10>
         <v-layout wrap>
           <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
-            <BGMBox :filepath="filepath"/>
+            <BGMBox :filepath="filepath" :nowBgm="nowBgm" @play-event="changeNowBgm($event)"/>
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
         </v-layout>
@@ -50,11 +50,15 @@ export default {
           this.bgmFiles.push(filenames[0])
         }
       )
+    },
+    changeNowBgm (name) {
+      this.nowBgm = name
     }
   },
   data: () => ({
     bgmFiles: ['public/bgm_sample.mp3', 'public/bgm_sample.mp3', 'public/bgm_sample.mp3'],
-    seNames: ['bang', 'bomb']
+    seNames: ['bang', 'bomb'],
+    nowBgm: null
   })
 }
 </script>

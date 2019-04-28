@@ -6,6 +6,8 @@
       <v-icon large @click="playSound" v-if="!isPlaying">play_circle_outline</v-icon>
       <v-icon large @click="pauseSound" v-else>pause_circle_outline</v-icon>
     </v-card>
+    <p v-if="isNowPlaying">再生中</p>
+    <p v-else>停止</p>
   </div>
 </template>
 
@@ -17,7 +19,8 @@ const fs = electron.remote.require('fs')
 export default {
   name: 'BGMBox',
   props: {
-    filepath: String
+    filepath: String,
+    nowBgm: String
   },
   data () {
     return {
@@ -42,6 +45,7 @@ export default {
   },
   methods: {
     playSound () {
+      this.$emit('play-event', this.filepath)
       if (!this.source) {
         return
       }
@@ -61,6 +65,9 @@ export default {
   computed: {
     name: function () {
       return path.basename(this.filepath)
+    },
+    isNowPlaying: function () {
+      return this.filepath === this.nowBgm
     }
   }
 }
