@@ -22,7 +22,6 @@
 
 <script>
 const path = require('path')
-const context = new AudioContext()
 const electron = require('electron')
 const fs = electron.remote.require('fs')
 export default {
@@ -32,10 +31,11 @@ export default {
   },
   data () {
     return {
-      source: null,
+      context: new AudioContext(),
       isStarted: false,
       isPlaying: false,
       currentTime: 0,
+      endTime: 0,
       intervalId: null
     }
   },
@@ -45,11 +45,12 @@ export default {
         console.error(error)
       }
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-      context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        const source = context.createBufferSource()
+      this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
+        const source = this.context.createBufferSource()
         source.buffer = decodedSoundBuffer
-        source.connect(context.destination)
-        this.source = source
+        source.connect(this.context.destination)
+        this.endTime = source.buffer.duration
+        this.context.source = source
       }).then()
     })
   },
@@ -58,37 +59,34 @@ export default {
   },
   methods: {
     playSound () {
-      if (!this.source) {
+      if (!this.context.source) {
         return
       }
       if (this.isStarted) {
-        context.resume().then()
+        this.context.resume().then()
       } else {
-        this.source.start(0)
+        this.context.source.start(0)
         this.isStarted = true
       }
       this.intervalId = setInterval(() => {
-        this.currentTime = context.currentTime;
+        this.currentTime = this.context.currentTime;
       }, 200)
       this.isPlaying = true
     },
     pauseSound () {
-      context.suspend().then()
+      this.context.suspend().then()
       clearInterval(this.intervalId)
       this.isPlaying = false
     },
     progressTimeText () {
-      if (!this.source) {
-        return ''
-      }
       const pad2Zero = (value) => {
         return ('00' + value).slice(-2)
       }
       const convert = (time) => {
         return `${pad2Zero(Math.floor(time / 60))}:${pad2Zero(Math.floor(time % 60))}`
       }
-      const endTime = this.source.buffer.duration
-      return `${convert(this.currentTime % endTime)} / ${convert(endTime)}`
+      const currentLoopTime = this.endTime !== 0 ? this.currentTime % this.endTime : 0
+      return `${convert(currentLoopTime)} / ${convert(this.endTime)}`
     }
   },
   computed: {
