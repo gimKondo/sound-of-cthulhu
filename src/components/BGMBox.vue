@@ -5,12 +5,14 @@
       <div>メモ</div>
       <v-layout>
         <v-flex xs-3>
-          <v-btn fab small color="grey darken-2">
+          <v-btn small fab color="grey darken-2">
             <v-icon @click="playSound" v-if="!isPlaying">play_arrow</v-icon>
             <v-icon @click="pauseSound" v-else>pause</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
+      <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
+      <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
     </v-card>
   </div>
 </template>
@@ -73,9 +75,6 @@ export default {
 </script>
 
 <style>
-.v-icon {
-  padding: 4px
-}
 .bgm-box-title {
   background-color:darkslateblue;
   word-wrap: break-word;
