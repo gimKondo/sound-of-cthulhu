@@ -5,9 +5,9 @@
       <div>メモ</div>
       <v-layout>
         <v-flex xs-3>
-          <v-btn small fab color="grey darken-2">
-            <v-icon @click="playSound" v-if="!isPlaying">play_arrow</v-icon>
-            <v-icon @click="pauseSound" v-else>pause</v-icon>
+          <v-btn @click="togglePlaying" small fab color="grey darken-2">
+            <v-icon v-if="!isPlaying">play_arrow</v-icon>
+            <v-icon v-else>pause</v-icon>
           </v-btn>
         </v-flex>
         <v-flex xs-9>
@@ -59,6 +59,13 @@ export default {
     clearInterval(this.intervalId)
   },
   methods: {
+    togglePlaying () {
+      if (this.isPlaying) {
+        this.pauseSound()
+      } else {
+        this.playSound()
+      }
+    },
     playSound () {
       if (!this.context.source) {
         return
