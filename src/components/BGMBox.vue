@@ -78,6 +78,9 @@ export default {
       this.isPlaying = false
     },
     progressTimeText () {
+      if (!this.source) {
+        return ''
+      }
       const pad2Zero = (value) => {
         return ('00' + value).slice(-2)
       }
