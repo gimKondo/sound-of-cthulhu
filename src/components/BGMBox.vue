@@ -30,7 +30,7 @@ export default {
   name: 'BGMBox',
   props: {
     filepath: String,
-    nowBgm: String
+    currentBGM: String
   },
   data () {
     return {
@@ -106,7 +106,7 @@ export default {
       return path.basename(this.filepath)
     },
     isNowPlaying: function () {
-      return this.filepath === this.nowBgm
+      return this.filepath === this.currentBGM
     }
   }
 }
