@@ -11,11 +11,11 @@
           </v-btn>
         </v-flex>
         <v-flex xs10>
-          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume"></v-slider>
+          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @change="applyVolume"></v-slider>
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-chip class="">{{progressTimeText()}}</v-chip>
+        <v-chip>{{progressTimeText()}}</v-chip>
       </v-layout>
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
@@ -27,6 +27,24 @@
 const path = require('path')
 const electron = require('electron')
 const fs = electron.remote.require('fs')
+function initializeSource (context, buffer) {
+  const source = context.createBufferSource()
+  source.buffer = buffer
+  source.loop = true
+  return source
+}
+function initializeGainNode (context, volume) {
+  const gainNode = context.createGain()
+  gainNode.gain.value = toRealVolume(volume)
+  return gainNode
+}
+function connectAll (context, source, gainNode) {
+  source.connect(gainNode)
+  gainNode.connect(context.destination)
+}
+function toRealVolume (percentValue) {
+  return percentValue * 0.01
+}
 export default {
   name: 'BGMBox',
   props: {
@@ -35,28 +53,26 @@ export default {
   data () {
     return {
       context: new AudioContext(),
+      source: null,
+      gainNode: null,
       isStarted: false,
       isPlaying: false,
       volume: 50,
       currentTime: 0,
-      endTime: 0,
       intervalId: null
     }
   },
   created () {
+    this.context.suspend().then()
     fs.readFile(this.filepath, (error, data) => {
       if (error) {
         console.error(error)
       }
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        const source = this.context.createBufferSource()
-        source.buffer = decodedSoundBuffer
-        source.connect(this.context.destination)
-        source.loop = true
-        this.endTime = source.buffer.duration
-        this.context.source = source
-        this.context.suspend()
+        this.source = initializeSource(this.context, decodedSoundBuffer)
+        this.gainNode = initializeGainNode(this.context, this.volume)
+        connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
   },
@@ -72,12 +88,12 @@ export default {
       }
     },
     playSound () {
-      if (!this.context.source) {
+      if (!this.source) {
         return
       }
       this.context.resume().then()
       if (!this.isStarted) {
-        this.context.source.start(0)
+        this.source.start(0)
         this.isStarted = true
       }
       this.intervalId = setInterval(() => {
@@ -99,11 +115,23 @@ export default {
       }
       const currentLoopTime = this.endTime !== 0 ? this.currentTime % this.endTime : 0
       return `${convert(currentLoopTime)} / ${convert(this.endTime)}`
+    },
+    applyVolume () {
+      if (!this.gainNode) {
+        return
+      }
+      this.gainNode.gain.value = toRealVolume(this.volume)
     }
   },
   computed: {
     name: function () {
       return path.basename(this.filepath)
+    },
+    endTime () {
+      if (!this.source) {
+        return 0
+      }
+      return this.source.buffer.duration;
     }
   }
 }
