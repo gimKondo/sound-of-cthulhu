@@ -17,6 +17,8 @@
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
     </v-card>
+    <p v-if="isNowPlaying">再生中</p>
+    <p v-else>停止</p>
   </div>
 </template>
 
@@ -27,7 +29,10 @@ const fs = electron.remote.require('fs')
 export default {
   name: 'BGMBox',
   props: {
-    filepath: String
+    // Now, BGM is indentified by file path.
+    // `currentBGM` is current BGM's file path
+    filepath: String,
+    currentBGM: String
   },
   data () {
     return {
@@ -68,6 +73,7 @@ export default {
       }
     },
     playSound () {
+      this.$emit('play-sound', this.filepath)
       if (!this.context.source) {
         return
       }
@@ -77,7 +83,7 @@ export default {
         this.isStarted = true
       }
       this.intervalId = setInterval(() => {
-        this.currentTime = this.context.currentTime;
+        this.currentTime = this.context.currentTime
       }, 200)
       this.isPlaying = true
     },
@@ -100,6 +106,9 @@ export default {
   computed: {
     name: function () {
       return path.basename(this.filepath)
+    },
+    isNowPlaying: function () {
+      return this.filepath === this.currentBGM
     }
   }
 }
