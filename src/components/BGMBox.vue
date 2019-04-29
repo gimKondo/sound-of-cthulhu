@@ -4,15 +4,18 @@
       <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
       <div>メモ</div>
       <v-layout>
-        <v-flex xs-3>
+        <v-flex xs2>
           <v-btn @click="togglePlaying" small fab color="grey darken-2">
             <v-icon v-if="!isPlaying">play_arrow</v-icon>
             <v-icon v-else>pause</v-icon>
           </v-btn>
         </v-flex>
-        <v-flex xs-9>
-          <v-card-text class="subheading">{{progressTimeText()}}</v-card-text>
+        <v-flex xs10>
+          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @change="applyVolume"></v-slider>
         </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-chip>{{progressTimeText()}}</v-chip>
       </v-layout>
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
@@ -35,26 +38,25 @@ export default {
   data () {
     return {
       context: new AudioContext(),
+      source: null,
+      gainNode: null,
       isStarted: false,
+      volume: 50,
       currentTime: 0,
-      endTime: 0,
       intervalId: null
     }
   },
   created () {
+    this.context.suspend().then()
     fs.readFile(this.filepath, (error, data) => {
       if (error) {
         console.error(error)
       }
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        const source = this.context.createBufferSource()
-        source.buffer = decodedSoundBuffer
-        source.connect(this.context.destination)
-        source.loop = true
-        this.endTime = source.buffer.duration
-        this.context.source = source
-        this.context.suspend()
+        this.source = this.initializeSource(this.context, decodedSoundBuffer)
+        this.gainNode = this.initializeGainNode(this.context, this.volume)
+        this.connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
   },
@@ -63,7 +65,7 @@ export default {
   },
   methods: {
     togglePlaying () {
-      if (!this.context.source) {
+      if (!this.source) {
         return
       }
       if (this.isPlaying) {
@@ -77,7 +79,7 @@ export default {
     playSound () {
       this.context.resume().then()
       if (!this.isStarted) {
-        this.context.source.start(0)
+        this.source.start(0)
         this.isStarted = true
       }
       this.intervalId = setInterval(() => {
@@ -97,6 +99,30 @@ export default {
       }
       const currentLoopTime = this.endTime !== 0 ? this.currentTime % this.endTime : 0
       return `${convert(currentLoopTime)} / ${convert(this.endTime)}`
+    },
+    applyVolume () {
+      if (!this.gainNode) {
+        return
+      }
+      this.gainNode.gain.value = this.toRealVolume(this.volume)
+    },
+    initializeSource (context, buffer) {
+      const source = context.createBufferSource()
+      source.buffer = buffer
+      source.loop = true
+      return source
+    },
+    initializeGainNode (context, volume) {
+      const gainNode = context.createGain()
+      gainNode.gain.value = this.toRealVolume(volume)
+      return gainNode
+    },
+    connectAll (context, source, gainNode) {
+      source.connect(gainNode)
+      gainNode.connect(context.destination)
+    },
+    toRealVolume (percentValue) {
+      return percentValue * 0.01
     }
   },
   computed: {
@@ -109,12 +135,29 @@ export default {
         this.pauseSound()
       }
       return isCurrent
+    },
+    endTime () {
+      if (!this.source) {
+        return 0
+      }
+      return this.source.buffer.duration
     }
   }
 }
 </script>
 
 <style>
+.v-slider {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.v-input--slider {
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.v-input--slider .v-input__slot {
+  margin-bottom: 0;
+}
 .v-progress-linear {
   margin: 0;
 }
