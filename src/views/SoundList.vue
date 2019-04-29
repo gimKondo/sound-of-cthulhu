@@ -56,7 +56,7 @@ export default {
     }
   },
   data: () => ({
-    bgmFiles: ['public/bgm_sample.mp3', 'public/bgm_sample.mp3', 'public/bgm_sample.mp3'],
+    bgmFiles: ['public/bgm_sample.mp3', 'public/short_sample.mp3'],
     seNames: ['bang', 'bomb'],
     currentBGM: null
   })
