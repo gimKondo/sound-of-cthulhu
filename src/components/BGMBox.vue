@@ -83,17 +83,18 @@ export default {
   },
   methods: {
     togglePlaying () {
+      if (!this.source) {
+        return
+      }
       if (this.isPlaying) {
+        this.$emit('play-sound', null)
         this.pauseSound()
       } else {
+        this.$emit('play-sound', this.filepath)
         this.playSound()
       }
     },
     playSound () {
-      this.$emit('play-sound', this.filepath)
-      if (!this.source) {
-        return
-      }
       this.context.resume().then()
       if (!this.isStarted) {
         this.source.start(0)
