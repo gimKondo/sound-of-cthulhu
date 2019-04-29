@@ -4,7 +4,7 @@
       <v-flex xs10>
         <v-layout wrap>
           <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
-            <BGMBox :filepath="filepath" :currentBGM="currentBGM" @play-event="changeNowBgm($event)"/>
+            <BGMBox :filepath="filepath" :currentBGM="currentBGM" @play-sound="changeCurrentBGM($event)"/>
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
         </v-layout>
@@ -51,7 +51,7 @@ export default {
         }
       )
     },
-    changeNowBgm (name) {
+    changeCurrentBGM (name) {
       this.currentBGM = name
     }
   },

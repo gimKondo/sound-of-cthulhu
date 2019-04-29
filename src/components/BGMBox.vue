@@ -73,7 +73,7 @@ export default {
       }
     },
     playSound () {
-      this.$emit('play-event', this.filepath)
+      this.$emit('play-sound', this.filepath)
       if (!this.context.source) {
         return
       }
