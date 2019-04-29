@@ -27,24 +27,6 @@
 const path = require('path')
 const electron = require('electron')
 const fs = electron.remote.require('fs')
-function initializeSource (context, buffer) {
-  const source = context.createBufferSource()
-  source.buffer = buffer
-  source.loop = true
-  return source
-}
-function initializeGainNode (context, volume) {
-  const gainNode = context.createGain()
-  gainNode.gain.value = toRealVolume(volume)
-  return gainNode
-}
-function connectAll (context, source, gainNode) {
-  source.connect(gainNode)
-  gainNode.connect(context.destination)
-}
-function toRealVolume (percentValue) {
-  return percentValue * 0.01
-}
 export default {
   name: 'BGMBox',
   props: {
@@ -72,9 +54,9 @@ export default {
       }
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        this.source = initializeSource(this.context, decodedSoundBuffer)
-        this.gainNode = initializeGainNode(this.context, this.volume)
-        connectAll(this.context, this.source, this.gainNode)
+        this.source = this.initializeSource(this.context, decodedSoundBuffer)
+        this.gainNode = this.initializeGainNode(this.context, this.volume)
+        this.connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
   },
@@ -122,7 +104,25 @@ export default {
       if (!this.gainNode) {
         return
       }
-      this.gainNode.gain.value = toRealVolume(this.volume)
+      this.gainNode.gain.value = this.toRealVolume(this.volume)
+    },
+    initializeSource (context, buffer) {
+      const source = context.createBufferSource()
+      source.buffer = buffer
+      source.loop = true
+      return source
+    },
+    initializeGainNode (context, volume) {
+      const gainNode = context.createGain()
+      gainNode.gain.value = this.toRealVolume(volume)
+      return gainNode
+    },
+    connectAll (context, source, gainNode) {
+      source.connect(gainNode)
+      gainNode.connect(context.destination)
+    },
+    toRealVolume (percentValue) {
+      return percentValue * 0.01
     }
   },
   computed: {
@@ -140,7 +140,7 @@ export default {
       if (!this.source) {
         return 0
       }
-      return this.source.buffer.duration;
+      return this.source.buffer.duration
     }
   }
 }
