@@ -11,7 +11,7 @@
           </v-btn>
         </v-flex>
         <v-flex xs10>
-          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @change="applyVolume"></v-slider>
+          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @input="applyVolume"></v-slider>
         </v-flex>
       </v-layout>
       <v-layout>
