@@ -48,7 +48,10 @@ function toRealVolume (percentValue) {
 export default {
   name: 'BGMBox',
   props: {
-    filepath: String
+    // Now, BGM is indentified by file path.
+    // `currentBGM` is current BGM's file path
+    filepath: String,
+    currentBGM: String
   },
   data () {
     return {
@@ -56,7 +59,6 @@ export default {
       source: null,
       gainNode: null,
       isStarted: false,
-      isPlaying: false,
       volume: 50,
       currentTime: 0,
       intervalId: null
@@ -88,6 +90,7 @@ export default {
       }
     },
     playSound () {
+      this.$emit('play-sound', this.filepath)
       if (!this.source) {
         return
       }
@@ -97,14 +100,12 @@ export default {
         this.isStarted = true
       }
       this.intervalId = setInterval(() => {
-        this.currentTime = this.context.currentTime;
+        this.currentTime = this.context.currentTime
       }, 200)
-      this.isPlaying = true
     },
     pauseSound () {
       this.context.suspend().then()
       clearInterval(this.intervalId)
-      this.isPlaying = false
     },
     progressTimeText () {
       const pad2Zero = (value) => {
@@ -124,8 +125,15 @@ export default {
     }
   },
   computed: {
-    name: function () {
+    name () {
       return path.basename(this.filepath)
+    },
+    isPlaying () {
+      const isCurrent = this.filepath === this.currentBGM
+      if (!isCurrent) {
+        this.pauseSound()
+      }
+      return isCurrent
     },
     endTime () {
       if (!this.source) {
