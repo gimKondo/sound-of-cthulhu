@@ -29,6 +29,8 @@ const fs = electron.remote.require('fs')
 export default {
   name: 'BGMBox',
   props: {
+    // Now, BGM is indentified by file path.
+    // `currentBGM` is current BGM's file path
     filepath: String,
     currentBGM: String
   },
