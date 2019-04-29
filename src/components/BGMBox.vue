@@ -17,8 +17,6 @@
       <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
       <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
     </v-card>
-    <p v-if="isNowPlaying">再生中</p>
-    <p v-else>停止</p>
   </div>
 </template>
 
@@ -38,7 +36,6 @@ export default {
     return {
       context: new AudioContext(),
       isStarted: false,
-      isPlaying: false,
       currentTime: 0,
       endTime: 0,
       intervalId: null
@@ -85,12 +82,10 @@ export default {
       this.intervalId = setInterval(() => {
         this.currentTime = this.context.currentTime
       }, 200)
-      this.isPlaying = true
     },
     pauseSound () {
       this.context.suspend().then()
       clearInterval(this.intervalId)
-      this.isPlaying = false
     },
     progressTimeText () {
       const pad2Zero = (value) => {
@@ -104,11 +99,15 @@ export default {
     }
   },
   computed: {
-    name: function () {
+    name () {
       return path.basename(this.filepath)
     },
-    isNowPlaying: function () {
-      return this.filepath === this.currentBGM
+    isPlaying () {
+      const isCurrent = this.filepath === this.currentBGM
+      if (!isCurrent) {
+        this.pauseSound()
+      }
+      return isCurrent
     }
   }
 }
