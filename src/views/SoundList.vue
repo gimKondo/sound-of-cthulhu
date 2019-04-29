@@ -55,10 +55,12 @@ export default {
       this.currentBGM = name
     }
   },
-  data: () => ({
-    bgmFiles: ['public/bgm_sample.mp3', 'public/short_sample.mp3'],
-    seNames: ['bang', 'bomb'],
-    currentBGM: null
-  })
+  data () {
+    return {
+      bgmFiles: ['public/bgm_sample.mp3', 'public/short_sample.mp3'],
+      seNames: ['bang', 'bomb'],
+      currentBGM: null
+    }
+  }
 }
 </script>
