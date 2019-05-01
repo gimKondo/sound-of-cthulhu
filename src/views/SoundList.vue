@@ -18,7 +18,12 @@
       <v-flex xs10>
         <v-layout wrap>
           <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
-            <BGMBox :filepath="filepath" :currentBGM="currentBGM" @play-sound="changeCurrentBGM($event)"/>
+            <BGMBox
+             :filepath="filepath"
+             :currentBGM="currentBGM"
+             @play-sound="changeCurrentBGM($event)"
+             @remove-sound="removeBGM($event)"
+            />
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
         </v-layout>
@@ -49,6 +54,7 @@ import SEBox from '@/components/SEBox.vue'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
+const path = require('path')
 const storage = require('electron-json-storage')
 
 export default {
@@ -103,6 +109,10 @@ export default {
     },
     changeCurrentBGM (name) {
       this.currentBGM = name
+    },
+    removeBGM (trgName) {
+      this.bgmFiles = this.bgmFiles.filter(filename => filename !== trgName)
+      this.showSnackbar(`"${path.basename(trgName, '.mp3')}" is removed`, 'info')
     },
     showSnackbar (text, color) {
       this.snackbarText = text
