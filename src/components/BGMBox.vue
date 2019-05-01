@@ -127,7 +127,7 @@ export default {
   },
   computed: {
     name () {
-      return path.basename(this.filepath)
+      return path.basename(this.filepath, '.mp3')
     },
     isPlaying () {
       const isCurrent = this.filepath === this.currentBGM
