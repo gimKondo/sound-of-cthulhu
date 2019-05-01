@@ -1,7 +1,14 @@
 <template>
   <div class="bgm-box">
     <v-card>
-      <v-card-title class="font-weight-bold bgm-box-title">{{name}}</v-card-title>
+      <v-layout class="bgm-box-title">
+        <v-flex xs1>
+          <v-icon @click="removeBGM">clear</v-icon>
+        </v-flex>
+        <v-flex xs11>
+          <v-card-title class="font-weight-bold">{{name}}</v-card-title>
+        </v-flex>
+      </v-layout>
       <div>メモ</div>
       <v-layout>
         <v-flex xs2>
@@ -64,6 +71,9 @@ export default {
     clearInterval(this.intervalId)
   },
   methods: {
+    removeBGM () {
+      this.$emit('remove-sound', this.filepath)
+    },
     togglePlaying () {
       if (!this.source) {
         return
@@ -127,7 +137,7 @@ export default {
   },
   computed: {
     name () {
-      return path.basename(this.filepath)
+      return path.basename(this.filepath, '.mp3')
     },
     isPlaying () {
       const isCurrent = this.filepath === this.currentBGM
