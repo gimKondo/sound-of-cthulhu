@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <v-container>
     <v-layout wrap>
       <v-tooltip top>
@@ -19,10 +19,11 @@
         <v-layout wrap>
           <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
             <BGMBox
-             :filepath="filepath"
-             :currentBGM="currentBGM"
-             @play-sound="changeCurrentBGM($event)"
-             @remove-sound="removeBGM($event)"
+              ref="BGMBoxes"
+              :filepath="filepath"
+              :currentBGM="currentBGM"
+              @play-sound="pauseOtherBGMs(filepath)"
+              @remove-sound="removeBGM($event)"
             />
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
@@ -107,8 +108,13 @@ export default {
         }
       )
     },
-    changeCurrentBGM (name) {
-      this.currentBGM = name
+    pauseOtherBGMs (playingFilepath) {
+      // Now, BGM is indentified by filepath.
+      this.$refs.BGMBoxes.forEach((bgmBox) => {
+        if (bgmBox.filepath !== playingFilepath) {
+          bgmBox.pauseSound()
+        }
+      })
     },
     removeBGM (trgName) {
       this.bgmFiles = this.bgmFiles.filter(filename => filename !== trgName)
@@ -126,7 +132,7 @@ export default {
   data () {
     return {
       soundListName: 'default',
-      bgmFiles: ['public/bgm_sample.mp3', 'public/short_sample.mp3'],
+      bgmFiles: [],
       seNames: ['bang', 'bomb'],
       currentBGM: null,
       snackbar: false,

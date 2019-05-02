@@ -12,35 +12,61 @@
       <div>メモ</div>
       <v-layout>
         <v-flex xs2>
-          <v-btn @click="togglePlaying" small fab color="grey darken-2">
-            <v-icon v-if="!isPlaying">play_arrow</v-icon>
-            <v-icon v-else>pause</v-icon>
-          </v-btn>
+          <PlayingToggle
+            v-if="source"
+            :isPlaying="isPlaying()"
+            @play-sound="playSound"
+            @pause-sound="pauseSound"
+          ></PlayingToggle>
         </v-flex>
         <v-flex xs10>
-          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @input="applyVolume"></v-slider>
+          <VolumeControl
+            v-if="source"
+            :value="initialVolume"
+            @input="applyVolume"
+          ></VolumeControl>
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-chip>{{progressTimeText()}}</v-chip>
+        <v-flex>
+          <ProgressTime
+            v-if="source"
+            :currentTime="currentTime"
+            :endTime="source.buffer.duration"
+          ></ProgressTime>
+        </v-flex>
       </v-layout>
-      <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
-      <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
+      <v-layout>
+        <v-flex>
+          <PlayingIndicator
+            :isPlaying="isPlaying()"
+          ></PlayingIndicator>
+        </v-flex>
+      </v-layout>
     </v-card>
   </div>
 </template>
 
 <script>
+import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControl from '@/components/VolumeControl.vue'
+import ProgressTime from '@/components/ProgressTime.vue'
+import PlayingIndicator from '@/components/PlayingIndicator.vue'
+
 const path = require('path')
 const electron = require('electron')
 const fs = electron.remote.require('fs')
+
 export default {
   name: 'BGMBox',
+  components: {
+    PlayingToggle,
+    VolumeControl,
+    ProgressTime,
+    PlayingIndicator
+  },
   props: {
-    // Now, BGM is indentified by file path.
-    // `currentBGM` is current BGM's file path
-    filepath: String,
-    currentBGM: String
+    filepath: String
   },
   data () {
     return {
@@ -48,7 +74,6 @@ export default {
       source: null,
       gainNode: null,
       isStarted: false,
-      volume: 50,
       currentTime: 0,
       intervalId: null
     }
@@ -62,7 +87,7 @@ export default {
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
         this.source = this.initializeSource(this.context, decodedSoundBuffer)
-        this.gainNode = this.initializeGainNode(this.context, this.volume)
+        this.gainNode = this.initializeGainNode(this.context, this.initialVolume)
         this.connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
@@ -72,22 +97,10 @@ export default {
   },
   methods: {
     removeBGM () {
-      this.$emit('remove-sound', this.filepath)
-    },
-    togglePlaying () {
-      if (!this.source) {
-        return
-      }
-      if (this.isPlaying) {
-        this.$emit('play-sound', null)
-        this.pauseSound()
-      } else {
-        this.$emit('play-sound', this.filepath)
-        this.playSound()
-      }
+      this.$emit('remove-sound')
     },
     playSound () {
-      this.context.resume().then()
+      this.context.resume().then(() => this.$forceUpdate())
       if (!this.isStarted) {
         this.source.start(0)
         this.isStarted = true
@@ -95,26 +108,14 @@ export default {
       this.intervalId = setInterval(() => {
         this.currentTime = this.context.currentTime
       }, 200)
+      this.$emit('play-sound')
     },
     pauseSound () {
-      this.context.suspend().then()
+      this.context.suspend().then(() => this.$forceUpdate())
       clearInterval(this.intervalId)
     },
-    progressTimeText () {
-      const pad2Zero = (value) => {
-        return ('00' + value).slice(-2)
-      }
-      const convert = (time) => {
-        return `${pad2Zero(Math.floor(time / 60))}:${pad2Zero(Math.floor(time % 60))}`
-      }
-      const currentLoopTime = this.endTime !== 0 ? this.currentTime % this.endTime : 0
-      return `${convert(currentLoopTime)} / ${convert(this.endTime)}`
-    },
-    applyVolume () {
-      if (!this.gainNode) {
-        return
-      }
-      this.gainNode.gain.value = this.toRealVolume(this.volume)
+    applyVolume (volume) {
+      this.gainNode.gain.value = this.toRealVolume(volume)
     },
     initializeSource (context, buffer) {
       const source = context.createBufferSource()
@@ -133,41 +134,23 @@ export default {
     },
     toRealVolume (percentValue) {
       return percentValue * 0.01
+    },
+    isPlaying () {
+      return this.context.state === 'running'
     }
   },
   computed: {
     name () {
       return path.basename(this.filepath, '.mp3')
     },
-    isPlaying () {
-      const isCurrent = this.filepath === this.currentBGM
-      if (!isCurrent) {
-        this.pauseSound()
-      }
-      return isCurrent
-    },
-    endTime () {
-      if (!this.source) {
-        return 0
-      }
-      return this.source.buffer.duration
+    initialVolume () {
+      return 50
     }
   }
 }
 </script>
 
 <style>
-.v-slider {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-.v-input--slider {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-.v-input--slider .v-input__slot {
-  margin-bottom: 0;
-}
 .v-progress-linear {
   margin: 0;
 }
