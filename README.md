@@ -1,4 +1,8 @@
-# sound-of-cthulhu
+# ![Sound of Cthulhu](./icons/Images/logo1.png "logo")
+
+![Icon](./icons/Images/android/mipmap-xxxhdpi/ic_launcher.png "icon")
+
+
 Sound management tool for TRPG session
 
 ## Tools version
