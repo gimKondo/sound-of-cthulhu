@@ -1,7 +1,7 @@
 <template>
   <div class="bgm-box">
     <v-card>
-      <v-layout class="bgm-box-title deep-purple">
+      <v-layout class="bgm-box-title deep-purple darken-3">
         <v-flex xs1>
           <RemoveSound
             text="clear"

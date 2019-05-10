@@ -21,7 +21,6 @@
             <BGMBox
               ref="BGMBoxes"
               :filepath="filepath"
-              :currentBGM="currentBGM"
               @play-sound="pauseOtherBGMs(index)"
               @remove-sound="removeBGM(index)"
             />
@@ -31,8 +30,11 @@
       </v-flex>
       <v-flex xs2>
         <v-layout wrap>
-          <v-flex xs12 pa-1 v-for="(name) in seNames" :key="name">
-            <SEBox :name="name"/>
+          <v-flex xs12 pa-1 v-for="(filepath, index) in seNames" :key="index">
+            <SEBox
+              ref="SEBoxes"
+              :filepath="filepath"
+            />
           </v-flex>
         </v-layout>
       </v-flex>
