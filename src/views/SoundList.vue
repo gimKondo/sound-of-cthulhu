@@ -22,8 +22,8 @@
               ref="BGMBoxes"
               :filepath="filepath"
               :currentBGM="currentBGM"
-              @play-sound="pauseOtherBGMs(filepath)"
-              @remove-sound="removeBGM($event)"
+              @play-sound="pauseOtherBGMs(index)"
+              @remove-sound="removeBGM(index)"
             />
           </v-flex>
           <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
@@ -108,17 +108,17 @@ export default {
         }
       )
     },
-    pauseOtherBGMs (playingFilepath) {
-      // Now, BGM is indentified by filepath.
-      this.$refs.BGMBoxes.forEach((bgmBox) => {
-        if (bgmBox.filepath !== playingFilepath) {
+    pauseOtherBGMs (playingIndex) {
+      this.$refs.BGMBoxes.forEach((bgmBox, i) => {
+        if (i !== playingIndex) {
           bgmBox.pauseSound()
         }
       })
     },
-    removeBGM (trgName) {
-      this.bgmFiles = this.bgmFiles.filter(filename => filename !== trgName)
-      this.showSnackbar(`"${path.basename(trgName, '.mp3')}" is removed`, 'info')
+    removeBGM (targetIndex) {
+      const targetFilepath = this.bgmFiles[targetIndex].filepath
+      this.bgmFiles = this.bgmFiles.filter((filename, i) => i !== targetIndex)
+      this.showSnackbar(`"${path.basename(targetFilepath, '.mp3')}" is removed`, 'info')
     },
     showSnackbar (text, color) {
       this.snackbarText = text
