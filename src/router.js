@@ -7,8 +7,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'SoundList',
-      component: () => import('./views/SoundList.vue')
+      name: 'Main',
+      component: () => import('./views/Main.vue')
     },
     {
       path: '/about',

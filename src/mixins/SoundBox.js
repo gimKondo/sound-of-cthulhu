@@ -19,7 +19,7 @@ export default {
     PlayingIndicator
   },
   props: {
-    filepath: String
+    filePath: String
   },
   data () {
     return {
@@ -33,7 +33,7 @@ export default {
   },
   created () {
     this.context.suspend().then()
-    fs.readFile(this.filepath, (error, data) => {
+    fs.readFile(this.filePath, (error, data) => {
       if (error) {
         console.error(error)
       }
@@ -94,7 +94,7 @@ export default {
   },
   computed: {
     name () {
-      return path.basename(this.filepath, '.mp3')
+      return path.basename(this.filePath, '.mp3')
     },
     initialVolume () {
       return 50
