@@ -62,7 +62,8 @@ export default {
   methods: {
     saveSoundList () {
       const soundList = {
-        BGMs: this.bgmFilePaths
+        BGMs: this.bgmFilePaths,
+        SEs: this.seFilePaths
       }
       storage.set(this.soundListName, soundList, (error) => {
         if (error) {
@@ -83,7 +84,8 @@ export default {
           this.showSnackbar('No sound list', 'error')
           return
         }
-        this.bgmFilePaths = data.BGMs
+        this.bgmFilePaths = data.BGMs || []
+        this.seFilePaths = data.SEs || []
       })
     },
     addBGM () {
@@ -97,10 +99,17 @@ export default {
       })
     },
     removeBGM (targetIndex) {
+      const targetFilePath = this.bgmFilePaths[targetIndex]
       this.bgmFilePaths = removeSound(this.bgmFilePaths, targetIndex)
+      this.showRemovedSnackbar(targetFilePath)
     },
     removeSE (targetIndex) {
+      const targetFilePath = this.seFilePaths[targetIndex]
       this.seFilePaths = removeSound(this.seFilePaths, targetIndex)
+      this.showRemovedSnackbar(targetFilePath)
+    },
+    showRemovedSnackbar (filepath) {
+      this.showSnackbar(`"${path.basename(filepath, '.mp3')}" is removed`, 'info')
     },
     showSnackbar (text, color) {
       this.snackbarText = text
@@ -140,9 +149,6 @@ function addSound (onSelectFile) {
 }
 
 function removeSound (filePaths, targetIndex) {
-  const targetFilepath = filePaths[targetIndex]
-  filePaths = filePaths.filter((_, i) => i !== targetIndex)
-  this.showSnackbar(`"${path.basename(targetFilepath, '.mp3')}" is removed`, 'info')
-  return filePaths
+  return filePaths.filter((_, i) => i !== targetIndex)
 }
 </script>
