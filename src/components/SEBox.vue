@@ -21,7 +21,6 @@
             v-if="source"
             :isPlaying="isPlaying()"
             @play-sound="playSound"
-            @pause-sound="pauseSound"
           ></PlayingToggle>
         </v-flex>
         <v-flex xs10>
@@ -47,12 +46,34 @@
 
 <script>
 import SoundBox from '@/mixins/SoundBox.js'
+import RemoveSound from '@/components/RemoveSound.vue'
+import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
+import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControl from '@/components/VolumeControl.vue'
+import PlayingIndicator from '@/components/PlayingIndicator.vue'
 
 export default {
   name: 'SEBox',
   mixins: [
     SoundBox
   ],
+  components: {
+    RemoveSound,
+    SoundBoxTitle,
+    PlayingToggle,
+    VolumeControl,
+    PlayingIndicator
+  },
+  methods: {
+    playSound () {
+      this.resumeSound()
+      this.source.start()
+      this.source.onended = () => {
+        this.suspendSound()
+        this.reloadSource()
+      }
+    }
+  },
   computed: {
     loop () {
       return false

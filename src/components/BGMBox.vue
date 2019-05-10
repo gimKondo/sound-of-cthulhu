@@ -54,12 +54,48 @@
 
 <script>
 import SoundBox from '@/mixins/SoundBox.js'
+import HasCurrentTime from '@/mixins/HasCurrentTime.js'
+import RemoveSound from '@/components/RemoveSound.vue'
+import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
+import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControl from '@/components/VolumeControl.vue'
+import ProgressTime from '@/components/ProgressTime.vue'
+import PlayingIndicator from '@/components/PlayingIndicator.vue'
 
 export default {
   name: 'BGMBox',
   mixins: [
-    SoundBox
+    SoundBox,
+    HasCurrentTime
   ],
+  components: {
+    RemoveSound,
+    SoundBoxTitle,
+    PlayingToggle,
+    VolumeControl,
+    ProgressTime,
+    PlayingIndicator
+  },
+  data () {
+    return {
+      isStarted: false
+    }
+  },
+  methods: {
+    playSound () {
+      this.resumeSound()
+      if (!this.isStarted) {
+        this.source.start()
+        this.isStarted = true
+      }
+      this.startCurrentTimeInterval()
+      this.$emit('play-sound')
+    },
+    pauseSound () {
+      this.suspendSound()
+      this.clearCurrentTimeInterval()
+    }
+  },
   computed: {
     loop () {
       return true
