@@ -46,6 +46,7 @@ export default {
     })
   },
   beforeDestroy () {
+    this.context.close()
     clearInterval(this.intervalId)
   },
   methods: {
