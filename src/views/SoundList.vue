@@ -17,7 +17,7 @@
     <v-layout wrap>
       <v-flex xs10>
         <v-layout wrap>
-          <v-flex xs6 md4 pa-1 v-for="(filepath, index) in bgmFiles" :key="index">
+          <v-flex xs6 md4 pa-1 v-for="(filepath) in bgmFiles" :key="filepath">
             <BGMBox
               ref="BGMBoxes"
               :filepath="filepath"
@@ -31,7 +31,7 @@
       </v-flex>
       <v-flex xs2>
         <v-layout wrap>
-          <v-flex xs12 pa-1 v-for="(name, index) in seNames" :key="index">
+          <v-flex xs12 pa-1 v-for="(name) in seNames" :key="name">
             <SEBox :name="name"/>
           </v-flex>
         </v-layout>
