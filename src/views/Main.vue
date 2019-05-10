@@ -18,7 +18,8 @@
       <v-flex xs10>
         <BGMList
           :filePaths="bgmFilePaths"
-          @remove-sound="removeBGM($event)"
+          @add-sound="addBGM"
+          @remove-sound="removeBGM"
         ></BGMList>
       </v-flex>
       <v-flex xs2>
@@ -89,6 +90,14 @@ export default {
       })
     },
     addBGM () {
+      this.addSound((filePath) => {
+        this.bgmFilePaths = this.bgmFilePaths.concat([filePath])
+      })
+    },
+    removeBGM (targetIndex) {
+      this.bgmFilePaths = this.removeSound(this.bgmFilePaths, targetIndex)
+    },
+    addSound (onSelectFile) {
       let window = remote.getCurrentWindow()
       let options = {
         title: 'File open',
@@ -99,21 +108,15 @@ export default {
       }
       dialog.showOpenDialog(window, options,
         (filenames) => {
-          this.bgmFilePaths.push(filenames[0])
+          onSelectFile(filenames[0])
         }
       )
     },
-    pauseOtherBGMs (playingIndex) {
-      this.$refs.BGMBoxes.forEach((bgmBox, i) => {
-        if (i !== playingIndex) {
-          bgmBox.pauseSound()
-        }
-      })
-    },
-    removeBGM (targetIndex) {
-      const targetFilepath = this.bgmFilePaths[targetIndex].filepath
-      this.bgmFilePaths = this.bgmFilePaths.filter((filename, i) => i !== targetIndex)
+    removeSound (filePaths, targetIndex) {
+      const targetFilepath = filePaths[targetIndex]
+      filePaths = filePaths.filter((_, i) => i !== targetIndex)
       this.showSnackbar(`"${path.basename(targetFilepath, '.mp3')}" is removed`, 'info')
+      return filePaths
     },
     showSnackbar (text, color) {
       this.snackbarText = text
