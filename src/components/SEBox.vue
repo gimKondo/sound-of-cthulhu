@@ -1,5 +1,5 @@
 <template>
-  <div class="bgm-box">
+  <div class="se-box">
     <v-card>
       <v-layout class="bgm-box-title teal darken-3">
         <v-flex xs1>
@@ -33,13 +33,6 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex>
-          <ProgressTime
-            v-if="source"
-            :currentTime="currentTime"
-            :endTime="source.buffer.duration"
-          ></ProgressTime>
-        </v-flex>
       </v-layout>
       <v-layout>
         <v-flex>

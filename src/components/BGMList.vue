@@ -13,19 +13,16 @@
 </template>
 
 <script>
-import SoundBox from '@/mixins/SoundBox.js'
+import SoundList from '@/mixins/SoundList.js'
 import BGMBox from '@/components/BGMBox.vue'
 
 export default {
   name: 'BGMList',
   mixins: [
-    SoundBox
+    SoundList
   ],
   components: {
     BGMBox
-  },
-  props: {
-    filePaths: Array
   },
   methods: {
     pauseOtherBGMs (playingIndex) {

@@ -23,11 +23,11 @@
         ></BGMList>
       </v-flex>
       <v-flex xs2>
-        <!--<SEList-->
-          <!--:filePaths="seFilePaths"-->
-          <!--@add-sound="addSE"-->
-          <!--@remove-sound="removeSE"-->
-        <!--&gt;</SEList>-->
+        <SEList
+          :filePaths="seFilePaths"
+          @add-sound="addSE"
+          @remove-sound="removeSE"
+        ></SEList>
       </v-flex>
     </v-layout>
     <v-snackbar
@@ -44,7 +44,7 @@
 
 <script>
 import BGMList from '@/components/BGMList.vue'
-// import SEList from '@/components/SEList.vue'
+import SEList from '@/components/SEList.vue'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
@@ -55,7 +55,7 @@ export default {
   name: 'Main',
   components: {
     BGMList,
-    // SEList
+    SEList
   },
   props: {
   },
