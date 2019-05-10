@@ -39,9 +39,9 @@ export default {
       }
       const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        this.source = this.initializeSource(this.context, decodedSoundBuffer)
-        this.gainNode = this.initializeGainNode(this.context, this.initialVolume)
-        this.connectAll(this.context, this.source, this.gainNode)
+        this.source = initializeSource(this.context, decodedSoundBuffer, this.loop)
+        this.gainNode = initializeGainNode(this.context, this.initialVolume)
+        connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
   },
@@ -69,25 +69,7 @@ export default {
       clearInterval(this.intervalId)
     },
     applyVolume (volume) {
-      this.gainNode.gain.value = this.toRealVolume(volume)
-    },
-    initializeSource (context, buffer) {
-      const source = context.createBufferSource()
-      source.buffer = buffer
-      source.loop = this.loop
-      return source
-    },
-    initializeGainNode (context, volume) {
-      const gainNode = context.createGain()
-      gainNode.gain.value = this.toRealVolume(volume)
-      return gainNode
-    },
-    connectAll (context, source, gainNode) {
-      source.connect(gainNode)
-      gainNode.connect(context.destination)
-    },
-    toRealVolume (percentValue) {
-      return percentValue * 0.01
+      this.gainNode.gain.value = toRealVolume(volume)
     },
     isPlaying () {
       return this.context.state === 'running'
@@ -101,4 +83,26 @@ export default {
       return 50
     }
   }
+}
+
+function initializeSource (context, buffer, loop) {
+  const source = context.createBufferSource()
+  source.buffer = buffer
+  source.loop = loop
+  return source
+}
+
+function initializeGainNode (context, volume) {
+  const gainNode = context.createGain()
+  gainNode.gain.value = toRealVolume(volume)
+  return gainNode
+}
+
+function connectAll (context, source, gainNode) {
+  source.connect(gainNode)
+  gainNode.connect(context.destination)
+}
+
+function toRealVolume (percentValue) {
+  return percentValue * 0.01
 }

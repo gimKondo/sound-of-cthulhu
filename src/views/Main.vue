@@ -23,14 +23,11 @@
         ></BGMList>
       </v-flex>
       <v-flex xs2>
-        <v-layout wrap>
-          <v-flex xs12 pa-1 v-for="(filePath, index) in seFilePaths" :key="index">
-            <!--<SEBox-->
-              <!--ref="SEBoxes"-->
-              <!--:filePath="filePath"-->
-            <!--/>-->
-          </v-flex>
-        </v-layout>
+        <!--<SEList-->
+          <!--:filePaths="seFilePaths"-->
+          <!--@add-sound="addSE"-->
+          <!--@remove-sound="removeSE"-->
+        <!--&gt;</SEList>-->
       </v-flex>
     </v-layout>
     <v-snackbar
@@ -47,7 +44,7 @@
 
 <script>
 import BGMList from '@/components/BGMList.vue'
-import SEBox from '@/components/SEBox.vue'
+// import SEList from '@/components/SEList.vue'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
@@ -58,7 +55,7 @@ export default {
   name: 'Main',
   components: {
     BGMList,
-    SEBox
+    // SEList
   },
   props: {
   },
@@ -90,33 +87,20 @@ export default {
       })
     },
     addBGM () {
-      this.addSound((filePath) => {
+      addSound((filePath) => {
         this.bgmFilePaths = this.bgmFilePaths.concat([filePath])
       })
     },
+    addSE () {
+      addSound((filePath) => {
+        this.seFilePaths = this.seFilePaths.concat([filePath])
+      })
+    },
     removeBGM (targetIndex) {
-      this.bgmFilePaths = this.removeSound(this.bgmFilePaths, targetIndex)
+      this.bgmFilePaths = removeSound(this.bgmFilePaths, targetIndex)
     },
-    addSound (onSelectFile) {
-      let window = remote.getCurrentWindow()
-      let options = {
-        title: 'File open',
-        filters: [
-          { name: 'sound', extensions: ['mp3'] }
-        ],
-        properties: ['openFile']
-      }
-      dialog.showOpenDialog(window, options,
-        (filenames) => {
-          onSelectFile(filenames[0])
-        }
-      )
-    },
-    removeSound (filePaths, targetIndex) {
-      const targetFilepath = filePaths[targetIndex]
-      filePaths = filePaths.filter((_, i) => i !== targetIndex)
-      this.showSnackbar(`"${path.basename(targetFilepath, '.mp3')}" is removed`, 'info')
-      return filePaths
+    removeSE (targetIndex) {
+      this.seFilePaths = removeSound(this.seFilePaths, targetIndex)
     },
     showSnackbar (text, color) {
       this.snackbarText = text
@@ -131,12 +115,34 @@ export default {
     return {
       soundListName: 'default',
       bgmFilePaths: [],
-      seFilePaths: ['bang', 'bomb'],
-      currentBGM: null,
+      seFilePaths: [],
       snackbar: false,
       snackbarText: '',
       snackbarColor: ''
     }
   }
+}
+
+function addSound (onSelectFile) {
+  let window = remote.getCurrentWindow()
+  let options = {
+    title: 'File open',
+    filters: [
+      { name: 'sound', extensions: ['mp3'] }
+    ],
+    properties: ['openFile']
+  }
+  dialog.showOpenDialog(window, options,
+    (filenames) => {
+      onSelectFile(filenames[0])
+    }
+  )
+}
+
+function removeSound (filePaths, targetIndex) {
+  const targetFilepath = filePaths[targetIndex]
+  filePaths = filePaths.filter((_, i) => i !== targetIndex)
+  this.showSnackbar(`"${path.basename(targetFilepath, '.mp3')}" is removed`, 'info')
+  return filePaths
 }
 </script>
