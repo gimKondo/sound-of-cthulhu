@@ -33,7 +33,6 @@ export default {
   },
   beforeDestroy () {
     this.context.close()
-    this.clearCurrentTimeInterval()
   },
   methods: {
     removeSound () {

@@ -14,5 +14,8 @@ export default {
     clearCurrentTimeInterval () {
       clearInterval(this.currentTimeIntervalId)
     }
+  },
+  beforeDestroy () {
+    this.clearCurrentTimeInterval()
   }
 }
