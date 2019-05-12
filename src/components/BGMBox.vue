@@ -78,6 +78,7 @@ export default {
   },
   data () {
     return {
+      loop: true,
       isStarted: false
     }
   },
@@ -94,11 +95,6 @@ export default {
     pauseSound () {
       this.suspendSound()
       this.clearCurrentTimeInterval()
-    }
-  },
-  computed: {
-    loop () {
-      return true
     }
   }
 }

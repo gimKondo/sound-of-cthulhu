@@ -64,6 +64,11 @@ export default {
     VolumeControl,
     PlayingIndicator
   },
+  data () {
+    return {
+      loop: false
+    }
+  },
   methods: {
     playSound () {
       this.resumeSound()
@@ -72,11 +77,6 @@ export default {
         this.suspendSound()
         this.reloadSource()
       }
-    }
-  },
-  computed: {
-    loop () {
-      return false
     }
   }
 }
