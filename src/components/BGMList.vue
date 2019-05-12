@@ -1,6 +1,6 @@
 <template>
   <v-layout wrap>
-    <v-flex xs6 md4 pa-1 v-for="(filePath, index) in filePaths" :key="index">
+    <v-flex xs6 md4 pa-1 v-for="(filePath, index) in filePaths" :key="filePath">
       <BGMBox
         ref="soundBoxes"
         :filePath="filePath"

@@ -1,6 +1,6 @@
 <template>
   <v-layout wrap>
-    <v-flex xs12 pa-1 v-for="(filePath, index) in filePaths" :key="index">
+    <v-flex xs12 pa-1 v-for="(filePath, index) in filePaths" :key="filePath">
       <SEBox
         :filePath="filePath"
         @remove-sound="$emit('remove-sound', index)"
