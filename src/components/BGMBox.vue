@@ -1,178 +1,104 @@
 <template>
   <div class="bgm-box">
     <v-card>
-      <v-layout class="bgm-box-title">
+      <v-layout class="bgm-box-title deep-purple darken-3">
         <v-flex xs1>
-          <v-icon @click="removeBGM">clear</v-icon>
+          <RemoveSound
+            text="clear"
+            @remove-sound="removeSound"
+          ></RemoveSound>
         </v-flex>
         <v-flex xs11>
-          <v-card-title class="font-weight-bold">{{name}}</v-card-title>
+          <SoundBoxTitle
+            :text="name"
+          ></SoundBoxTitle>
         </v-flex>
       </v-layout>
       <div>メモ</div>
       <v-layout>
         <v-flex xs2>
-          <v-btn @click="togglePlaying" small fab color="grey darken-2">
-            <v-icon v-if="!isPlaying">play_arrow</v-icon>
-            <v-icon v-else>pause</v-icon>
-          </v-btn>
+          <PlayingToggle
+            v-if="source"
+            :isPlaying="isPlaying()"
+            @play-sound="playSound"
+            @pause-sound="pauseSound"
+          ></PlayingToggle>
         </v-flex>
         <v-flex xs10>
-          <v-slider append-icon="volume_up" prepend-icon="volume_down" v-model="volume" @input="applyVolume"></v-slider>
+          <VolumeControl
+            v-if="source"
+            :value="initialVolume"
+            @input="applyVolume"
+          ></VolumeControl>
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-chip>{{progressTimeText()}}</v-chip>
+        <v-flex>
+          <ProgressTime
+            v-if="source"
+            :currentTime="currentTime"
+            :endTime="source.buffer.duration"
+          ></ProgressTime>
+        </v-flex>
       </v-layout>
-      <v-progress-linear v-if="!isPlaying" :value="0"></v-progress-linear>
-      <v-progress-linear v-else :indeterminate="true"></v-progress-linear>
+      <v-layout>
+        <v-flex>
+          <PlayingIndicator
+            :isPlaying="isPlaying()"
+          ></PlayingIndicator>
+        </v-flex>
+      </v-layout>
     </v-card>
   </div>
 </template>
 
 <script>
-const path = require('path')
-const electron = require('electron')
-const fs = electron.remote.require('fs')
+import SoundBox from '@/mixins/SoundBox.js'
+import HasCurrentTime from '@/mixins/HasCurrentTime.js'
+import RemoveSound from '@/components/RemoveSound.vue'
+import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
+import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControl from '@/components/VolumeControl.vue'
+import ProgressTime from '@/components/ProgressTime.vue'
+import PlayingIndicator from '@/components/PlayingIndicator.vue'
+
 export default {
   name: 'BGMBox',
-  props: {
-    // Now, BGM is indentified by file path.
-    // `currentBGM` is current BGM's file path
-    filepath: String,
-    currentBGM: String
+  mixins: [
+    SoundBox,
+    HasCurrentTime
+  ],
+  components: {
+    RemoveSound,
+    SoundBoxTitle,
+    PlayingToggle,
+    VolumeControl,
+    ProgressTime,
+    PlayingIndicator
   },
   data () {
     return {
-      context: new AudioContext(),
-      source: null,
-      gainNode: null,
-      isStarted: false,
-      volume: 50,
-      currentTime: 0,
-      intervalId: null
+      loop: true,
+      isStarted: false
     }
-  },
-  created () {
-    this.context.suspend().then()
-    fs.readFile(this.filepath, (error, data) => {
-      if (error) {
-        console.error(error)
-      }
-      const arraySoundBuffer = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-      this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
-        this.source = this.initializeSource(this.context, decodedSoundBuffer)
-        this.gainNode = this.initializeGainNode(this.context, this.volume)
-        this.connectAll(this.context, this.source, this.gainNode)
-      }).then()
-    })
-  },
-  beforeDestroy () {
-    clearInterval(this.intervalId)
   },
   methods: {
-    removeBGM () {
-      this.$emit('remove-sound', this.filepath)
-    },
-    togglePlaying () {
-      if (!this.source) {
-        return
-      }
-      if (this.isPlaying) {
-        this.$emit('play-sound', null)
-        this.pauseSound()
-      } else {
-        this.$emit('play-sound', this.filepath)
-        this.playSound()
-      }
-    },
     playSound () {
-      this.context.resume().then()
+      this.resumeSound()
       if (!this.isStarted) {
-        this.source.start(0)
+        this.source.start()
         this.isStarted = true
       }
-      this.intervalId = setInterval(() => {
-        this.currentTime = this.context.currentTime
-      }, 200)
+      this.startCurrentTimeInterval()
+      this.$emit('play-sound')
     },
     pauseSound () {
-      this.context.suspend().then()
-      clearInterval(this.intervalId)
-    },
-    progressTimeText () {
-      const pad2Zero = (value) => {
-        return ('00' + value).slice(-2)
-      }
-      const convert = (time) => {
-        return `${pad2Zero(Math.floor(time / 60))}:${pad2Zero(Math.floor(time % 60))}`
-      }
-      const currentLoopTime = this.endTime !== 0 ? this.currentTime % this.endTime : 0
-      return `${convert(currentLoopTime)} / ${convert(this.endTime)}`
-    },
-    applyVolume () {
-      if (!this.gainNode) {
-        return
-      }
-      this.gainNode.gain.value = this.toRealVolume(this.volume)
-    },
-    initializeSource (context, buffer) {
-      const source = context.createBufferSource()
-      source.buffer = buffer
-      source.loop = true
-      return source
-    },
-    initializeGainNode (context, volume) {
-      const gainNode = context.createGain()
-      gainNode.gain.value = this.toRealVolume(volume)
-      return gainNode
-    },
-    connectAll (context, source, gainNode) {
-      source.connect(gainNode)
-      gainNode.connect(context.destination)
-    },
-    toRealVolume (percentValue) {
-      return percentValue * 0.01
-    }
-  },
-  computed: {
-    name () {
-      return path.basename(this.filepath, '.mp3')
-    },
-    isPlaying () {
-      const isCurrent = this.filepath === this.currentBGM
-      if (!isCurrent) {
-        this.pauseSound()
-      }
-      return isCurrent
-    },
-    endTime () {
-      if (!this.source) {
-        return 0
-      }
-      return this.source.buffer.duration
+      this.suspendSound()
+      this.clearCurrentTimeInterval()
     }
   }
 }
 </script>
 
 <style>
-.v-slider {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-.v-input--slider {
-  margin-left: 8px;
-  margin-right: 8px;
-}
-.v-input--slider .v-input__slot {
-  margin-bottom: 0;
-}
-.v-progress-linear {
-  margin: 0;
-}
-.bgm-box-title {
-  background-color:darkslateblue;
-  word-wrap: break-word;
-}
 </style>

@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <v-container>
     <v-layout wrap>
       <v-tooltip top>
@@ -16,24 +16,18 @@
     </v-layout>
     <v-layout wrap>
       <v-flex xs10>
-        <v-layout wrap>
-          <v-flex xs6 md4 pa-1 v-for="(filepath) in bgmFiles" :key="filepath">
-            <BGMBox
-             :filepath="filepath"
-             :currentBGM="currentBGM"
-             @play-sound="changeCurrentBGM($event)"
-             @remove-sound="removeBGM($event)"
-            />
-          </v-flex>
-          <v-icon @click="addBGM" size='75'>playlist_add</v-icon>
-        </v-layout>
+        <BGMList
+          :filePaths="bgmFilePaths"
+          @add-sound="addBGM"
+          @remove-sound="removeBGM"
+        ></BGMList>
       </v-flex>
       <v-flex xs2>
-        <v-layout wrap>
-          <v-flex xs12 pa-1 v-for="(name) in seNames" :key="name">
-            <SEBox :name="name"/>
-          </v-flex>
-        </v-layout>
+        <SEList
+          :filePaths="seFilePaths"
+          @add-sound="addSE"
+          @remove-sound="removeSE"
+        ></SEList>
       </v-flex>
     </v-layout>
     <v-snackbar
@@ -49,8 +43,8 @@
 </template>
 
 <script>
-import BGMBox from '@/components/BGMBox.vue'
-import SEBox from '@/components/SEBox.vue'
+import BGMList from '@/components/BGMList.vue'
+import SEList from '@/components/SEList.vue'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
@@ -58,17 +52,18 @@ const path = require('path')
 const storage = require('electron-json-storage')
 
 export default {
-  name: 'SoundList',
+  name: 'Main',
   components: {
-    BGMBox,
-    SEBox
+    BGMList,
+    SEList
   },
   props: {
   },
   methods: {
     saveSoundList () {
       const soundList = {
-        BGMs: this.bgmFiles
+        BGMs: this.bgmFilePaths,
+        SEs: this.seFilePaths
       }
       storage.set(this.soundListName, soundList, (error) => {
         if (error) {
@@ -89,10 +84,27 @@ export default {
           this.showSnackbar('No sound list', 'error')
           return
         }
-        this.bgmFiles = data.BGMs
+        this.bgmFilePaths = data.BGMs || []
+        this.seFilePaths = data.SEs || []
       })
     },
     addBGM () {
+      this.addSound((filePath) => {
+        this.bgmFilePaths = this.bgmFilePaths.concat([filePath])
+      })
+    },
+    addSE () {
+      this.addSound((filePath) => {
+        this.seFilePaths = this.seFilePaths.concat([filePath])
+      })
+    },
+    removeBGM (targetIndex) {
+      this.bgmFilePaths = this.removeSound(this.bgmFilePaths, targetIndex)
+    },
+    removeSE (targetIndex) {
+      this.seFilePaths = this.removeSound(this.seFilePaths, targetIndex)
+    },
+    addSound (onSelectFile) {
       let window = remote.getCurrentWindow()
       let options = {
         title: 'File open',
@@ -103,16 +115,15 @@ export default {
       }
       dialog.showOpenDialog(window, options,
         (filenames) => {
-          this.bgmFiles.push(filenames[0])
+          onSelectFile(filenames[0])
         }
       )
     },
-    changeCurrentBGM (name) {
-      this.currentBGM = name
-    },
-    removeBGM (trgName) {
-      this.bgmFiles = this.bgmFiles.filter(filename => filename !== trgName)
-      this.showSnackbar(`"${path.basename(trgName, '.mp3')}" is removed`, 'info')
+    removeSound (filePaths, targetIndex) {
+      const targetFilePath = filePaths[targetIndex]
+      const removedFilePaths = filePaths.filter((_, i) => i !== targetIndex)
+      this.showSnackbar(`"${path.basename(targetFilePath, '.mp3')}" is removed`, 'info')
+      return removedFilePaths
     },
     showSnackbar (text, color) {
       this.snackbarText = text
@@ -126,9 +137,8 @@ export default {
   data () {
     return {
       soundListName: 'default',
-      bgmFiles: ['public/bgm_sample.mp3', 'public/short_sample.mp3'],
-      seNames: ['bang', 'bomb'],
-      currentBGM: null,
+      bgmFilePaths: [],
+      seFilePaths: [],
       snackbar: false,
       snackbarText: '',
       snackbarColor: ''
