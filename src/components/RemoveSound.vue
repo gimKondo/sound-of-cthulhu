@@ -6,7 +6,7 @@
 export default {
   name: 'RemoveSound',
   props: {
-    text: String,
+    text: String
   }
 }
 </script>

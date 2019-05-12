@@ -7,7 +7,7 @@
 export default {
   name: 'SoundBoxTitle',
   props: {
-    text: String,
+    text: String
   }
 }
 </script>
