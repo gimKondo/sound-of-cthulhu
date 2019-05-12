@@ -89,27 +89,41 @@ export default {
       })
     },
     addBGM () {
-      addSound((filePath) => {
+      this.addSound((filePath) => {
         this.bgmFilePaths = this.bgmFilePaths.concat([filePath])
       })
     },
     addSE () {
-      addSound((filePath) => {
+      this.addSound((filePath) => {
         this.seFilePaths = this.seFilePaths.concat([filePath])
       })
     },
     removeBGM (targetIndex) {
-      const targetFilePath = this.bgmFilePaths[targetIndex]
-      this.bgmFilePaths = removeSound(this.bgmFilePaths, targetIndex)
-      this.showRemovedSnackbar(targetFilePath)
+      this.bgmFilePaths = this.removeSound(this.bgmFilePaths, targetIndex)
     },
     removeSE (targetIndex) {
-      const targetFilePath = this.seFilePaths[targetIndex]
-      this.seFilePaths = removeSound(this.seFilePaths, targetIndex)
-      this.showRemovedSnackbar(targetFilePath)
+      this.seFilePaths = this.removeSound(this.seFilePaths, targetIndex)
     },
-    showRemovedSnackbar (filepath) {
-      this.showSnackbar(`"${path.basename(filepath, '.mp3')}" is removed`, 'info')
+    addSound (onSelectFile) {
+      let window = remote.getCurrentWindow()
+      let options = {
+        title: 'File open',
+        filters: [
+          { name: 'sound', extensions: ['mp3'] }
+        ],
+        properties: ['openFile']
+      }
+      dialog.showOpenDialog(window, options,
+        (filenames) => {
+          onSelectFile(filenames[0])
+        }
+      )
+    },
+    removeSound (filePaths, targetIndex) {
+      const targetFilePath = filePaths[targetIndex]
+      const removedFilePaths = filePaths.filter((_, i) => i !== targetIndex)
+      this.showSnackbar(`"${path.basename(targetFilePath, '.mp3')}" is removed`, 'info')
+      return removedFilePaths
     },
     showSnackbar (text, color) {
       this.snackbarText = text
@@ -130,25 +144,5 @@ export default {
       snackbarColor: ''
     }
   }
-}
-
-function addSound (onSelectFile) {
-  let window = remote.getCurrentWindow()
-  let options = {
-    title: 'File open',
-    filters: [
-      { name: 'sound', extensions: ['mp3'] }
-    ],
-    properties: ['openFile']
-  }
-  dialog.showOpenDialog(window, options,
-    (filenames) => {
-      onSelectFile(filenames[0])
-    }
-  )
-}
-
-function removeSound (filePaths, targetIndex) {
-  return filePaths.filter((_, i) => i !== targetIndex)
 }
 </script>
