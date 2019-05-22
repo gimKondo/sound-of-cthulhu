@@ -1,9 +1,10 @@
 <template>
   <v-layout wrap>
-    <v-flex xs6 md4 pa-1 v-for="(filePath, index) in filePaths" :key="filePath">
+    <v-flex xs6 md4 pa-1 v-for="(sound, index) in sounds" :key="sound.filePath">
       <BGMBox
         ref="soundBoxes"
-        :filePath="filePath"
+        :filePath="sound.filePath"
+        :volume="sound.volume"
         @play-sound="pauseOtherBGMs(index)"
         @remove-sound="$emit('remove-sound', index)"
       />
