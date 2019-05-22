@@ -1,7 +1,5 @@
 <template>
   <v-slider
-    append-icon="volume_up"
-    prepend-icon="volume_down"
     :max="100"
     v-bind:value="value"
     v-on:input="$emit('input', $event)"
@@ -14,12 +12,6 @@ export default {
   props: {
     value: Number
   }
-  // ,
-  // data () {
-  //   return {
-  //     volume: this.initialVolume
-  //   }
-  // }
 }
 </script>
 
