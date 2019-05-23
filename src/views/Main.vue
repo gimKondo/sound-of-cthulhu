@@ -20,6 +20,7 @@
           :sounds="BGMs"
           @add-sound="addBGM"
           @remove-sound="removeBGM"
+          @apply-volume="applyBGMVolume"
         ></BGMList>
       </v-flex>
       <v-flex xs2>
@@ -27,6 +28,7 @@
           :sounds="SEs"
           @add-sound="addSE"
           @remove-sound="removeSE"
+          @apply-volume="applySEVolume"
         ></SEList>
       </v-flex>
     </v-layout>
@@ -114,6 +116,12 @@ export default {
     removeSE (targetIndex) {
       this.SEs = this.removeSound(this.SEs, targetIndex)
     },
+    applyBGMVolume (targetIndex, volume) {
+      this.applyVolume(this.BGMs, targetIndex, volume)
+    },
+    applySEVolume (targetIndex, volume) {
+      this.applyVolume(this.SEs, targetIndex, volume)
+    },
     addSound (onSelectFile) {
       let window = remote.getCurrentWindow()
       let options = {
@@ -137,6 +145,9 @@ export default {
       const removedSounds = sounds.filter((_, i) => i !== targetIndex)
       this.showSnackbar(`"${path.basename(targetFilePath, '.mp3')}" is removed`, 'info')
       return removedSounds
+    },
+    applyVolume (sounds, targetIndex, volume) {
+      sounds[targetIndex].volume = volume
     },
     showSnackbar (text, color) {
       this.snackbarText = text

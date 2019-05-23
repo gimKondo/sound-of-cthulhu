@@ -4,7 +4,8 @@
       <SEBox
         :filePath="sound.filePath"
         :volume="sound.volume"
-        @remove-sound="$emit('remove-sound', index)"
+        @remove-sound="removeSound(index)"
+        @apply-volume="applyVolume(index, $event)"
       />
     </v-flex>
     <v-icon @click="$emit('add-sound')" size='75'>playlist_add</v-icon>

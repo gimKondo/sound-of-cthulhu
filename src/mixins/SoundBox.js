@@ -51,6 +51,7 @@ export default {
     },
     applyVolume (volume) {
       this.gainNode.gain.value = toRealVolume(volume)
+      this.$emit('apply-volume', volume)
     },
     isPlaying () {
       return this.context.state === 'running'

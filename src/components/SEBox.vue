@@ -26,7 +26,7 @@
         <v-flex xs10>
           <VolumeControl
             v-if="source"
-            v-model="volume"
+            :value="volume"
             @input="applyVolume"
           ></VolumeControl>
         </v-flex>
