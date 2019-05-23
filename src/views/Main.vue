@@ -53,7 +53,7 @@ const { dialog } = require('electron').remote
 const path = require('path')
 const storage = require('electron-json-storage')
 
-const initialVolume = 50;
+const initialVolume = 50
 
 export default {
   name: 'Main',
