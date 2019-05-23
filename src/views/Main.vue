@@ -21,7 +21,7 @@
           @add-sound="addBGM"
           @remove-sound="removeBGM"
           @apply-volume="applyBGMVolume"
-        ></BGMList>
+        />
       </v-flex>
       <v-flex xs2>
         <SEList
@@ -29,7 +29,7 @@
           @add-sound="addSE"
           @remove-sound="removeSE"
           @apply-volume="applySEVolume"
-        ></SEList>
+        />
       </v-flex>
     </v-layout>
     <v-snackbar
