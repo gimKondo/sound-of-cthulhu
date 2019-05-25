@@ -6,12 +6,12 @@
           <RemoveSound
             text="clear"
             @remove-sound="removeSound"
-          ></RemoveSound>
+          />
         </v-flex>
         <v-flex xs11>
           <SoundBoxTitle
             :text="name"
-          ></SoundBoxTitle>
+          />
         </v-flex>
       </v-layout>
       <div>メモ</div>
@@ -21,23 +21,21 @@
             v-if="source"
             :isPlaying="isPlaying()"
             @play-sound="playSound"
-          ></PlayingToggle>
+          />
         </v-flex>
         <v-flex xs10>
           <VolumeControl
             v-if="source"
-            :value="initialVolume"
+            :value="volume"
             @input="applyVolume"
-          ></VolumeControl>
+          />
         </v-flex>
-      </v-layout>
-      <v-layout>
       </v-layout>
       <v-layout>
         <v-flex>
           <PlayingIndicator
             :isPlaying="isPlaying()"
-          ></PlayingIndicator>
+          />
         </v-flex>
       </v-layout>
     </v-card>

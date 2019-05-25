@@ -17,17 +17,19 @@
     <v-layout wrap>
       <v-flex xs10>
         <BGMList
-          :filePaths="bgmFilePaths"
+          :sounds="BGMs"
           @add-sound="addBGM"
           @remove-sound="removeBGM"
-        ></BGMList>
+          @apply-volume="applyBGMVolume"
+        />
       </v-flex>
       <v-flex xs2>
         <SEList
-          :filePaths="seFilePaths"
+          :sounds="SEs"
           @add-sound="addSE"
           @remove-sound="removeSE"
-        ></SEList>
+          @apply-volume="applySEVolume"
+        />
       </v-flex>
     </v-layout>
     <v-snackbar
@@ -51,6 +53,8 @@ const { dialog } = require('electron').remote
 const path = require('path')
 const storage = require('electron-json-storage')
 
+const initialVolume = 50
+
 export default {
   name: 'Main',
   components: {
@@ -62,8 +66,8 @@ export default {
   methods: {
     saveSoundList () {
       const soundList = {
-        BGMs: this.bgmFilePaths,
-        SEs: this.seFilePaths
+        BGMs: this.BGMs,
+        SEs: this.SEs
       }
       storage.set(this.soundListName, soundList, (error) => {
         if (error) {
@@ -80,29 +84,43 @@ export default {
           this.showSnackbar(`Fail to load. error:[${error}]`, 'error')
           return
         }
-        if (Object.keys(data).length === 0) {
-          this.showSnackbar('No sound list', 'error')
-          return
+        const extractSounds = (key) => {
+          const sounds = data[key]
+          if (!Array.isArray(sounds)) {
+            this.showSnackbar(`No ${key}.`, 'error')
+            return []
+          }
+          if (!sounds.every(isValidSound)) {
+            this.showSnackbar(`Invalid ${key}.`, 'error')
+            return []
+          }
+          return data[key]
         }
-        this.bgmFilePaths = data.BGMs || []
-        this.seFilePaths = data.SEs || []
+        this.BGMs = extractSounds('BGMs')
+        this.SEs = extractSounds('SEs')
       })
     },
     addBGM () {
-      this.addSound((filePath) => {
-        this.bgmFilePaths = this.bgmFilePaths.concat([filePath])
+      this.addSound((sound) => {
+        this.BGMs = this.BGMs.concat([sound])
       })
     },
     addSE () {
-      this.addSound((filePath) => {
-        this.seFilePaths = this.seFilePaths.concat([filePath])
+      this.addSound((sound) => {
+        this.SEs = this.SEs.concat([sound])
       })
     },
     removeBGM (targetIndex) {
-      this.bgmFilePaths = this.removeSound(this.bgmFilePaths, targetIndex)
+      this.BGMs = this.removeSound(this.BGMs, targetIndex)
     },
     removeSE (targetIndex) {
-      this.seFilePaths = this.removeSound(this.seFilePaths, targetIndex)
+      this.SEs = this.removeSound(this.SEs, targetIndex)
+    },
+    applyBGMVolume (targetIndex, volume) {
+      this.applyVolume(this.BGMs, targetIndex, volume)
+    },
+    applySEVolume (targetIndex, volume) {
+      this.applyVolume(this.SEs, targetIndex, volume)
     },
     addSound (onSelectFile) {
       let window = remote.getCurrentWindow()
@@ -115,15 +133,21 @@ export default {
       }
       dialog.showOpenDialog(window, options,
         (filenames) => {
-          onSelectFile(filenames[0])
+          onSelectFile({
+            filePath: filenames[0],
+            volume: initialVolume
+          })
         }
       )
     },
-    removeSound (filePaths, targetIndex) {
-      const targetFilePath = filePaths[targetIndex]
-      const removedFilePaths = filePaths.filter((_, i) => i !== targetIndex)
+    removeSound (sounds, targetIndex) {
+      const targetFilePath = sounds[targetIndex].filePath
+      const removedSounds = sounds.filter((_, i) => i !== targetIndex)
       this.showSnackbar(`"${path.basename(targetFilePath, '.mp3')}" is removed`, 'info')
-      return removedFilePaths
+      return removedSounds
+    },
+    applyVolume (sounds, targetIndex, volume) {
+      sounds[targetIndex].volume = volume
     },
     showSnackbar (text, color) {
       this.snackbarText = text
@@ -137,12 +161,16 @@ export default {
   data () {
     return {
       soundListName: 'default',
-      bgmFilePaths: [],
-      seFilePaths: [],
+      BGMs: [],
+      SEs: [],
       snackbar: false,
       snackbarText: '',
       snackbarColor: ''
     }
   }
+}
+
+function isValidSound (sound) {
+  return typeof sound.filePath === 'string' && Number.isInteger(sound.volume)
 }
 </script>

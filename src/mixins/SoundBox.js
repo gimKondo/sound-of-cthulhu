@@ -4,7 +4,8 @@ const fs = electron.remote.require('fs')
 
 export default {
   props: {
-    filePath: String
+    filePath: String,
+    volume: Number
   },
   data () {
     return {
@@ -26,7 +27,7 @@ export default {
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
         this.decodedSoundBuffer = decodedSoundBuffer
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-        this.gainNode = initializeGainNode(this.context, this.initialVolume)
+        this.gainNode = initializeGainNode(this.context, this.volume)
         connectAll(this.context, this.source, this.gainNode)
       }).then()
     })
@@ -50,6 +51,7 @@ export default {
     },
     applyVolume (volume) {
       this.gainNode.gain.value = toRealVolume(volume)
+      this.$emit('apply-volume', volume)
     },
     isPlaying () {
       return this.context.state === 'running'
@@ -58,9 +60,6 @@ export default {
   computed: {
     name () {
       return path.basename(this.filePath, '.mp3')
-    },
-    initialVolume () {
-      return 50
     }
   }
 }
