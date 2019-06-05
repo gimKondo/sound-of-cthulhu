@@ -8,7 +8,8 @@ Sound management tool for TRPG session
 ## Tools version
 - Node.js 11.13.0
 - npm 6.9.0
-- vue-cli 3.5.5
+- yarn 1.16.1
+- vue-cli 3.8.2
 
 ## Project setup
 ```
