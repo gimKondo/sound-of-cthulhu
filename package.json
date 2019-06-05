@@ -17,6 +17,8 @@
   "dependencies": {
     "core-js": "^2.6.5",
     "electron-json-storage": "^4.1.6",
+    "lodash": "^4.17.11",
+    "lodash.assign": "^4.2.0",
     "vue": "^2.6.6",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.5"
