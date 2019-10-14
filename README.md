@@ -2,7 +2,6 @@
 
 ![Icon](./icons/Images/android/mipmap-xxxhdpi/ic_launcher.png "icon")
 
-
 Sound management tool for TRPG session
 
 ## Tools version
@@ -12,27 +11,32 @@ Sound management tool for TRPG session
 - vue-cli 3.8.2
 
 ## Project setup
-```
+
+```sh
 yarn install
 ```
 
 ### Compiles and hot-reloads for development
-```
+
+```sh
 yarn electron:serve
 ```
 
 ### Compiles and minifies for production
-```
+
+```sh
 yarn electron:build
 ```
 
 ### Run your tests
-```
+
+```sh
 yarn run test
 ```
 
 ### Lints and fixes files
-```
+
+```sh
 yarn run lint
 ```
 
