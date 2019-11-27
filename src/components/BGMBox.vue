@@ -30,6 +30,13 @@
             @toggle-volume-control="toggleVolumeControl"
           />
         </v-flex>
+        <v-flex xs4>
+          <ProgressTime
+            v-if="source"
+            :currentTime="currentTime"
+            :endTime="source.buffer.duration"
+          />
+        </v-flex>
       </v-layout>
       <v-layout>
         <v-flex>
@@ -37,15 +44,6 @@
             v-if="source && isVolumeControlOpened"
             :value="volume"
             @input="applyVolume"
-          />
-        </v-flex>
-      </v-layout>
-      <v-layout>
-        <v-flex>
-          <ProgressTime
-            v-if="source"
-            :currentTime="currentTime"
-            :endTime="source.buffer.duration"
           />
         </v-flex>
       </v-layout>
