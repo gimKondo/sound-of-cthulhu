@@ -24,9 +24,17 @@
             @pause-sound="pauseSound"
           />
         </v-flex>
-        <v-flex xs10>
+        <v-flex xs2>
+          <VolumeControlToggle
+            :isOpened="isVolumeControlOpened"
+            @toggle-volume-control="toggleVolumeControl"
+          />
+        </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
           <VolumeControl
-            v-if="source"
+            v-if="source && isVolumeControlOpened"
             :value="volume"
             @input="applyVolume"
           />
@@ -58,6 +66,7 @@ import HasCurrentTime from '@/mixins/HasCurrentTime.js'
 import RemoveSound from '@/components/RemoveSound.vue'
 import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
 import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControlToggle from '@/components/VolumeControlToggle.vue'
 import VolumeControl from '@/components/VolumeControl.vue'
 import ProgressTime from '@/components/ProgressTime.vue'
 import PlayingIndicator from '@/components/PlayingIndicator.vue'
@@ -72,6 +81,7 @@ export default {
     RemoveSound,
     SoundBoxTitle,
     PlayingToggle,
+    VolumeControlToggle,
     VolumeControl,
     ProgressTime,
     PlayingIndicator
