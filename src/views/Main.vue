@@ -1,5 +1,5 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <v-container>
+  <v-container fluid>
     <v-layout wrap>
       <v-tooltip top>
         <template v-slot:activator="{ on }">
