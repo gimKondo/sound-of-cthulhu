@@ -13,7 +13,8 @@ export default {
 </script>
 
 <style>
-.v-card-title {
+.v-card__title {
   word-wrap: break-word;
+  padding: 8px;
 }
 </style>
