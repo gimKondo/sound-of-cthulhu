@@ -16,28 +16,34 @@
       </v-layout>
       <div>メモ</div>
       <v-layout>
-        <v-flex xs2>
-          <PlayingToggle
-            v-if="source"
-            :isPlaying="isPlaying()"
-            @play-sound="playSound"
-            @pause-sound="pauseSound"
-          />
+        <v-flex>
+          <v-btn-toggle multiple>
+            <PlayingToggle
+              v-if="source"
+              :isPlaying="isPlaying()"
+              @play-sound="playSound"
+              @pause-sound="pauseSound"
+            />
+            <VolumeControlToggle
+              :isOpened="isVolumeControlOpened"
+              @toggle-volume-control="toggleVolumeControl"
+            />
+          </v-btn-toggle>
         </v-flex>
-        <v-flex xs10>
-          <VolumeControl
-            v-if="source"
-            :value="volume"
-            @input="applyVolume"
-          />
-        </v-flex>
-      </v-layout>
-      <v-layout>
         <v-flex>
           <ProgressTime
             v-if="source"
             :currentTime="currentTime"
             :endTime="source.buffer.duration"
+          />
+        </v-flex>
+      </v-layout>
+      <v-layout>
+        <v-flex>
+          <VolumeControl
+            v-if="source && isVolumeControlOpened"
+            :value="volume"
+            @input="applyVolume"
           />
         </v-flex>
       </v-layout>
@@ -58,6 +64,7 @@ import HasCurrentTime from '@/mixins/HasCurrentTime.js'
 import RemoveSound from '@/components/RemoveSound.vue'
 import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
 import PlayingToggle from '@/components/PlayingToggle.vue'
+import VolumeControlToggle from '@/components/VolumeControlToggle.vue'
 import VolumeControl from '@/components/VolumeControl.vue'
 import ProgressTime from '@/components/ProgressTime.vue'
 import PlayingIndicator from '@/components/PlayingIndicator.vue'
@@ -72,6 +79,7 @@ export default {
     RemoveSound,
     SoundBoxTitle,
     PlayingToggle,
+    VolumeControlToggle,
     VolumeControl,
     ProgressTime,
     PlayingIndicator

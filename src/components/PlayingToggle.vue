@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="toggle" small fab color="grey darken-2">
+  <v-btn @click="toggle" color="grey darken-2">
     <v-icon v-if="!isPlaying">play_arrow</v-icon>
     <v-icon v-else>pause</v-icon>
   </v-btn>

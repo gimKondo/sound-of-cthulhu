@@ -13,6 +13,7 @@ export default {
       source: null,
       gainNode: null,
       isStarted: false,
+      isVolumeControlOpened: false,
       decodedSoundBuffer: null
     }
   },
@@ -55,6 +56,9 @@ export default {
     },
     isPlaying () {
       return this.context.state === 'running'
+    },
+    toggleVolumeControl () {
+      this.isVolumeControlOpened = !this.isVolumeControlOpened
     }
   },
   computed: {

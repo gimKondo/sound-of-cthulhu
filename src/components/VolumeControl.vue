@@ -3,6 +3,8 @@
     :max="100"
     v-bind:value="value"
     v-on:input="$emit('input', $event)"
+    append-icon="volume_up"
+    prepend-icon="volume_down"
   ></v-slider>
 </template>
 

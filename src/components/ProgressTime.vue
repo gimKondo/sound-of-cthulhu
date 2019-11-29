@@ -29,4 +29,7 @@ export default {
 </script>
 
 <style>
+.v-chip {
+  margin: 0;
+}
 </style>
