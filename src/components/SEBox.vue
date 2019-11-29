@@ -16,18 +16,18 @@
       </v-layout>
       <div>メモ</div>
       <v-layout>
-        <v-flex xs3>
+        <v-flex>
+          <v-btn-toggle multiple>
           <PlayingToggle
             v-if="source"
             :isPlaying="isPlaying()"
             @play-sound="playSound"
           />
-        </v-flex>
-        <v-flex xs3>
-          <VolumeControlToggle
-            :isOpened="isVolumeControlOpened"
-            @toggle-volume-control="toggleVolumeControl"
-          />
+            <VolumeControlToggle
+              :isOpened="isVolumeControlOpened"
+              @toggle-volume-control="toggleVolumeControl"
+            />
+          </v-btn-toggle>
         </v-flex>
       </v-layout>
       <v-layout>

@@ -16,21 +16,21 @@
       </v-layout>
       <div>メモ</div>
       <v-layout>
-        <v-flex xs2>
-          <PlayingToggle
-            v-if="source"
-            :isPlaying="isPlaying()"
-            @play-sound="playSound"
-            @pause-sound="pauseSound"
-          />
+        <v-flex>
+          <v-btn-toggle multiple>
+            <PlayingToggle
+              v-if="source"
+              :isPlaying="isPlaying()"
+              @play-sound="playSound"
+              @pause-sound="pauseSound"
+            />
+            <VolumeControlToggle
+              :isOpened="isVolumeControlOpened"
+              @toggle-volume-control="toggleVolumeControl"
+            />
+          </v-btn-toggle>
         </v-flex>
-        <v-flex xs2>
-          <VolumeControlToggle
-            :isOpened="isVolumeControlOpened"
-            @toggle-volume-control="toggleVolumeControl"
-          />
-        </v-flex>
-        <v-flex xs4>
+        <v-flex>
           <ProgressTime
             v-if="source"
             :currentTime="currentTime"

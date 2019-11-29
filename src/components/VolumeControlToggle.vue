@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="toggle" small fab color="grey darken-2">
+  <v-btn @click="toggle" color="grey darken-2" class="btn--active">
     <v-icon >volume_up</v-icon>
   </v-btn>
 </template>
@@ -12,7 +12,6 @@ export default {
   },
   methods: {
     toggle () {
-      console.log('toggle')
       this.$emit('toggle-volume-control')
     }
   }
