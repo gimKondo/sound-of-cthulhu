@@ -1,6 +1,12 @@
 {
   "name": "sound-of-cthulhu",
   "version": "1.0.0",
+  "description": "Sound management tool for TRPG session",
+  "author": { "name": "gimKondo", "email": "gim0kondo@gmaill.com", "url": "https://github.com/gimKondo" },
+  "contributors": [
+    { "name": "u-ishii", "url": "https://github.com/u-ishii" },
+    { "name": "shiranuik", "email": "shiranui@woodpine.com", "url": "https://github.com/shiranuik" }
+  ],
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
