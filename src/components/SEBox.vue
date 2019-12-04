@@ -14,7 +14,6 @@
           />
         </v-flex>
       </v-layout>
-      <div>メモ</div>
       <v-layout>
         <v-flex>
           <v-btn-toggle multiple>

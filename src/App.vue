@@ -7,7 +7,6 @@
         </router-link>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <router-link to="/about" class="header-about">About</router-link>
       <v-btn
         flat
         href="https://github.com/gimKondo/sound-of-cthulhu/releases/latest"
@@ -43,9 +42,5 @@ export default {
 .header-icon {
   padding-top: 0.5em;
   padding-right: 0.5em;
-}
-.header-about {
-  color:white;
-  text-decoration: none;
 }
 </style>
