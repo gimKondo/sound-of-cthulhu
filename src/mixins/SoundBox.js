@@ -4,12 +4,12 @@ const fs = electron.remote.require('fs')
 
 export default {
   props: {
+    context: AudioContext,
     filePath: String,
     volume: Number
   },
   data () {
     return {
-      context: new AudioContext(),
       source: null,
       gainNode: null,
       isPlaying: false,
@@ -19,7 +19,6 @@ export default {
     }
   },
   created () {
-    this.context.onstatechange = () => this.$forceUpdate()
     fs.readFile(this.filePath, (error, data) => {
       if (error) {
         console.error(error)
@@ -34,9 +33,6 @@ export default {
         this.gainNode.connect(this.context.destination)
       }).then()
     })
-  },
-  beforeDestroy () {
-    this.context.close()
   },
   methods: {
     removeSound () {

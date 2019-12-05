@@ -3,6 +3,7 @@
     <v-flex xs6 md4 pa-1 v-for="(sound, index) in sounds" :key="sound.filePath">
       <BGMBox
         ref="soundBoxes"
+        :context="context"
         :filePath="sound.filePath"
         :volume="sound.volume"
         @play-sound="pauseOtherBGMs(index)"
