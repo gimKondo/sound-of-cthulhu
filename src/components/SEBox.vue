@@ -19,7 +19,7 @@
           <v-btn-toggle multiple>
           <PlayingToggle
             v-if="source"
-            :isPlaying="isPlaying()"
+            :isPlaying="isPlaying"
             @play-sound="playSound"
           />
             <VolumeControlToggle
@@ -41,7 +41,7 @@
       <v-layout>
         <v-flex>
           <PlayingIndicator
-            :isPlaying="isPlaying()"
+            :isPlaying="isPlaying"
           />
         </v-flex>
       </v-layout>
@@ -78,11 +78,9 @@ export default {
   },
   methods: {
     playSound () {
-      this.resumeSound()
-      this.source.start()
+      this.startSource(0)
       this.source.onended = () => {
-        this.suspendSound()
-        this.reloadSource()
+        this.stopSource()
       }
     }
   }
