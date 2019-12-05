@@ -2,6 +2,7 @@
   <v-layout wrap>
     <v-flex xs12 pa-1 v-for="(sound, index) in sounds" :key="sound.filePath">
       <SEBox
+        :context="context"
         :filePath="sound.filePath"
         :volume="sound.volume"
         @remove-sound="removeSound(index)"

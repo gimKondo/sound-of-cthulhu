@@ -1,18 +1,27 @@
+let startTime = 0
+let stackTime = 0
+let currentTimeIntervalId = null
+
 export default {
   data () {
     return {
-      currentTime: 0,
-      currentTimeIntervalId: null
+      playingTime: 0
     }
   },
   methods: {
     startCurrentTimeInterval () {
-      this.currentTimeIntervalId = setInterval(() => {
-        this.currentTime = this.context.currentTime
+      startTime = this.context.currentTime
+      currentTimeIntervalId = setInterval(() => {
+        this.playingTime = this.context.currentTime - startTime
       }, 200)
     },
     clearCurrentTimeInterval () {
-      clearInterval(this.currentTimeIntervalId)
+      stackTime = stackTime + this.playingTime
+      this.playingTime = 0
+      clearInterval(currentTimeIntervalId)
+    },
+    currentTime () {
+      return stackTime + this.playingTime
     }
   },
   beforeDestroy () {

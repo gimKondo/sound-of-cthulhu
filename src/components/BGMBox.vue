@@ -19,7 +19,7 @@
           <v-btn-toggle multiple>
             <PlayingToggle
               v-if="source"
-              :isPlaying="isPlaying()"
+              :isPlaying="isPlaying"
               @play-sound="playSound"
               @pause-sound="pauseSound"
             />
@@ -32,7 +32,7 @@
         <v-flex>
           <ProgressTime
             v-if="source"
-            :currentTime="currentTime"
+            :currentTime="currentTime()"
             :endTime="source.buffer.duration"
           />
         </v-flex>
@@ -49,7 +49,7 @@
       <v-layout>
         <v-flex>
           <PlayingIndicator
-            :isPlaying="isPlaying()"
+            :isPlaying="isPlaying"
           />
         </v-flex>
       </v-layout>
@@ -91,16 +91,12 @@ export default {
   },
   methods: {
     playSound () {
-      this.resumeSound()
-      if (!this.isStarted) {
-        this.source.start()
-        this.isStarted = true
-      }
+      this.startSource(this.currentTime())
       this.startCurrentTimeInterval()
       this.$emit('play-sound')
     },
     pauseSound () {
-      this.suspendSound()
+      this.stopSource()
       this.clearCurrentTimeInterval()
     }
   }

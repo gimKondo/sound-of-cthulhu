@@ -1,5 +1,6 @@
 export default {
   props: {
+    context: AudioContext,
     sounds: Array
   },
   methods: {

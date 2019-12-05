@@ -17,6 +17,7 @@
     <v-layout wrap>
       <v-flex xs10>
         <BGMList
+          :context="context"
           :sounds="BGMs"
           @add-sound="addBGM"
           @remove-sound="removeBGM"
@@ -25,6 +26,7 @@
       </v-flex>
       <v-flex xs2>
         <SEList
+          :context="context"
           :sounds="SEs"
           @add-sound="addSE"
           @remove-sound="removeSE"
@@ -156,10 +158,12 @@ export default {
     }
   },
   created () {
+    this.context.onstatechange = () => this.$forceUpdate()
     this.loadSoundList()
   },
   data () {
     return {
+      context: new AudioContext(),
       soundListName: 'default',
       BGMs: [],
       SEs: [],
