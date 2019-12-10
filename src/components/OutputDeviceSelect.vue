@@ -1,9 +1,9 @@
 <template>
   <v-select
     :items="items"
-    :value="value"
-    @input="$emit('input', $event.target.value)"
+    @input="$emit('input', $event)"
     item-text="label"
+    item-value="deviceId"
     label="Output Device"
   />
 </template>
@@ -12,8 +12,7 @@
 export default {
   name: 'OutputDeviceSelect',
   props: {
-    items: Array,
-    value: Object
+    items: Array
   }
 }
 </script>

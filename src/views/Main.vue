@@ -15,7 +15,7 @@
       </v-tooltip>
       <OutputDeviceSelect
         :items="availableOutputDevices"
-        v-model="outputDevice"
+        @input="changeDestination"
       />
     </v-layout>
     <v-layout wrap>
@@ -74,6 +74,16 @@ export default {
   props: {
   },
   methods: {
+    changeDestination (deviceId) {
+      // Since there is no official API, use the hacky method.
+      const destination = this.context.createMediaStreamDestination()
+      const audio = new Audio()
+      audio.srcObject = destination.stream
+      audio.setSinkId(deviceId)
+      this.channelSplitter.disconnect()
+      this.channelSplitter.connect(destination)
+      audio.play()
+    },
     saveSoundList () {
       const soundList = {
         BGMs: this.BGMs,
@@ -177,7 +187,6 @@ export default {
       context: context,
       channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
-      outputDevice: null,
       availableOutputDevices: [],
       BGMs: [],
       SEs: [],
