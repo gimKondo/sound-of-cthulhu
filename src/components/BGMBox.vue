@@ -85,8 +85,7 @@ export default {
   },
   data () {
     return {
-      loop: true,
-      isStarted: false
+      loop: true
     }
   },
   methods: {

@@ -14,7 +14,6 @@ export default {
       source: null,
       gain: null,
       isPlaying: false,
-      isStarted: false,
       isVolumeControlOpened: false,
       decodedSoundBuffer: null
     }
