@@ -22,6 +22,7 @@
       <v-flex xs10>
         <BGMList
           :context="context"
+          :channel-splitter="channelSplitter"
           :sounds="BGMs"
           @add-sound="addBGM"
           @remove-sound="removeBGM"
@@ -31,6 +32,7 @@
       <v-flex xs2>
         <SEList
           :context="context"
+          :channel-splitter="channelSplitter"
           :sounds="SEs"
           @add-sound="addSE"
           @remove-sound="removeSE"
@@ -165,12 +167,15 @@ export default {
   },
   async created () {
     this.context.onstatechange = () => this.$forceUpdate()
+    this.channelSplitter.connect(this.context.destination)
     this.availableOutputDevices = await getAvailableOutputDevices()
     this.loadSoundList()
   },
   data () {
+    const context = new AudioContext()
     return {
-      context: new AudioContext(),
+      context: context,
+      channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
       outputDevice: null,
       availableOutputDevices: [],

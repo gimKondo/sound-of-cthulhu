@@ -1,6 +1,7 @@
 export default {
   props: {
     context: AudioContext,
+    channelSplitter: ChannelSplitterNode,
     sounds: Array
   },
   methods: {

@@ -5,6 +5,7 @@ const fs = electron.remote.require('fs')
 export default {
   props: {
     context: AudioContext,
+    channelSplitter: ChannelSplitterNode,
     filePath: String,
     volume: Number
   },
@@ -28,9 +29,9 @@ export default {
         this.decodedSoundBuffer = decodedSoundBuffer
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
         this.gainNode = initializeGainNode(this.context, this.volume)
-        // source -> gainNode -> destination
+        // source -> gainNode -> channelSplitter
         this.source.connect(this.gainNode)
-        this.gainNode.connect(this.context.destination)
+        this.gainNode.connect(this.channelSplitter)
       }).then()
     })
   },
@@ -49,7 +50,7 @@ export default {
     },
     reloadSource () {
       this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-      this.source.connect(this.gainNode)
+      this.source.connect(this.channelSplitter)
     },
     applyVolume (volume) {
       this.gainNode.gain.value = toRealVolume(volume)
