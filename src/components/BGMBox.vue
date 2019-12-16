@@ -32,7 +32,7 @@
         <v-flex>
           <ProgressTime
             v-if="source"
-            :currentTime="currentTime()"
+            :currentTime="currentTime"
             :endTime="source.buffer.duration"
           />
         </v-flex>
@@ -59,7 +59,6 @@
 
 <script>
 import SoundBox from '@/mixins/SoundBox.js'
-import HasCurrentTime from '@/mixins/HasCurrentTime.js'
 import RemoveSound from '@/components/RemoveSound.vue'
 import SoundBoxTitle from '@/components/SoundBoxTitle.vue'
 import PlayingToggle from '@/components/PlayingToggle.vue'
@@ -67,12 +66,12 @@ import VolumeControlToggle from '@/components/VolumeControlToggle.vue'
 import VolumeControl from '@/components/VolumeControl.vue'
 import ProgressTime from '@/components/ProgressTime.vue'
 import PlayingIndicator from '@/components/PlayingIndicator.vue'
+import CurrentTimeCounter from '@/services/CurrentTimeCounter'
 
 export default {
   name: 'BGMBox',
   mixins: [
-    SoundBox,
-    HasCurrentTime
+    SoundBox
   ],
   components: {
     RemoveSound,
@@ -85,19 +84,26 @@ export default {
   },
   data () {
     return {
-      loop: true,
-      isStarted: false
+      currentTimeCounter: null,
+      currentTime: 0,
+      loop: true
     }
+  },
+  created () {
+    this.currentTimeCounter = new CurrentTimeCounter(this.context, (value) => { this.currentTime = value })
+  },
+  beforeDestroy () {
+    this.pauseSound()
   },
   methods: {
     playSound () {
-      this.startSource(this.currentTime())
-      this.startCurrentTimeInterval()
+      this.startSource(this.currentTime)
+      this.currentTimeCounter.start()
       this.$emit('play-sound')
     },
     pauseSound () {
       this.stopSource()
-      this.clearCurrentTimeInterval()
+      this.currentTimeCounter.clear()
     }
   }
 }
