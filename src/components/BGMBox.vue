@@ -97,11 +97,17 @@ export default {
   },
   methods: {
     playSound () {
+      if (this.isPlaying) {
+        return
+      }
       this.startSource(this.currentTime)
       this.currentTimeCounter.start()
       this.$emit('play-sound')
     },
     pauseSound () {
+      if (!this.isPlaying) {
+        return
+      }
       this.stopSource()
       this.currentTimeCounter.clear()
     }
