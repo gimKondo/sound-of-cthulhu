@@ -13,11 +13,16 @@
         </template>
         <span>Load</span>
       </v-tooltip>
+      <OutputDeviceSelect
+        :items="availableOutputDevices"
+        @input="changeDestination"
+      />
     </v-layout>
     <v-layout wrap>
       <v-flex xs10>
         <BGMList
           :context="context"
+          :channel-splitter="channelSplitter"
           :sounds="BGMs"
           @add-sound="addBGM"
           @remove-sound="removeBGM"
@@ -27,6 +32,7 @@
       <v-flex xs2>
         <SEList
           :context="context"
+          :channel-splitter="channelSplitter"
           :sounds="SEs"
           @add-sound="addSE"
           @remove-sound="removeSE"
@@ -47,6 +53,7 @@
 </template>
 
 <script>
+import OutputDeviceSelect from '@/components/OutputDeviceSelect.vue'
 import BGMList from '@/components/BGMList.vue'
 import SEList from '@/components/SEList.vue'
 
@@ -60,12 +67,23 @@ const initialVolume = 50
 export default {
   name: 'Main',
   components: {
+    OutputDeviceSelect,
     BGMList,
     SEList
   },
   props: {
   },
   methods: {
+    changeDestination (deviceId) {
+      // Since there is no official API, use the hacky method.
+      const destination = this.context.createMediaStreamDestination()
+      const audio = new Audio()
+      audio.srcObject = destination.stream
+      audio.setSinkId(deviceId)
+      this.channelSplitter.disconnect()
+      this.channelSplitter.connect(destination)
+      audio.play()
+    },
     saveSoundList () {
       const soundList = {
         BGMs: this.BGMs,
@@ -157,14 +175,19 @@ export default {
       this.snackbar = true
     }
   },
-  created () {
+  async created () {
     this.context.onstatechange = () => this.$forceUpdate()
+    this.channelSplitter.connect(this.context.destination)
+    this.availableOutputDevices = await getAvailableOutputDevices()
     this.loadSoundList()
   },
   data () {
+    const context = new AudioContext()
     return {
-      context: new AudioContext(),
+      context: context,
+      channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
+      availableOutputDevices: [],
       BGMs: [],
       SEs: [],
       snackbar: false,
@@ -177,4 +200,10 @@ export default {
 function isValidSound (sound) {
   return typeof sound.filePath === 'string' && Number.isInteger(sound.volume)
 }
+
+async function getAvailableOutputDevices () {
+  return (await navigator.mediaDevices.enumerateDevices())
+    .filter(device => device.kind === 'audiooutput')
+}
+
 </script>

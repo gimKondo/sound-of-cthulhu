@@ -4,6 +4,7 @@
       <BGMBox
         ref="soundBoxes"
         :context="context"
+        :channel-splitter="channelSplitter"
         :filePath="sound.filePath"
         :volume="sound.volume"
         @play-sound="pauseOtherBGMs(index)"

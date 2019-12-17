@@ -5,15 +5,15 @@ const fs = electron.remote.require('fs')
 export default {
   props: {
     context: AudioContext,
+    channelSplitter: ChannelSplitterNode,
     filePath: String,
     volume: Number
   },
   data () {
     return {
       source: null,
-      gainNode: null,
+      gain: null,
       isPlaying: false,
-      isStarted: false,
       isVolumeControlOpened: false,
       decodedSoundBuffer: null
     }
@@ -27,10 +27,10 @@ export default {
       this.context.decodeAudioData(arraySoundBuffer, (decodedSoundBuffer) => {
         this.decodedSoundBuffer = decodedSoundBuffer
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-        this.gainNode = initializeGainNode(this.context, this.volume)
-        // source -> gainNode -> destination
-        this.source.connect(this.gainNode)
-        this.gainNode.connect(this.context.destination)
+        this.gain = initializeGainNode(this.context, this.volume)
+        // Source -> Gain -> ChannelSplitter
+        this.source.connect(this.gain)
+        this.gain.connect(this.channelSplitter)
       }).then()
     })
   },
@@ -49,10 +49,10 @@ export default {
     },
     reloadSource () {
       this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-      this.source.connect(this.gainNode)
+      this.source.connect(this.channelSplitter)
     },
     applyVolume (volume) {
-      this.gainNode.gain.value = toRealVolume(volume)
+      this.gain.gain.value = toRealVolume(volume)
       this.$emit('apply-volume', volume)
     },
     toggleVolumeControl () {
@@ -74,9 +74,9 @@ function initializeSource (context, buffer, loop) {
 }
 
 function initializeGainNode (context, volume) {
-  const gainNode = context.createGain()
-  gainNode.gain.value = toRealVolume(volume)
-  return gainNode
+  const gain = context.createGain()
+  gain.gain.value = toRealVolume(volume)
+  return gain
 }
 
 function toRealVolume (percentValue) {
