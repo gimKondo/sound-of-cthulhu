@@ -23,6 +23,9 @@
               @play-sound="playSound"
               @pause-sound="pauseSound"
             />
+            <ProgressTimeResetter
+              @reset-progress-time="resetProgressTime"
+            />
             <VolumeControlToggle
               :isOpened="isVolumeControlOpened"
               @toggle-volume-control="toggleVolumeControl"
@@ -65,6 +68,7 @@ import PlayingToggle from '@/components/PlayingToggle.vue'
 import VolumeControlToggle from '@/components/VolumeControlToggle.vue'
 import VolumeControl from '@/components/VolumeControl.vue'
 import ProgressTime from '@/components/ProgressTime.vue'
+import ProgressTimeResetter from '@/components/ProgressTimeResetter'
 import PlayingIndicator from '@/components/PlayingIndicator.vue'
 import CurrentTimeCounter from '@/services/CurrentTimeCounter'
 
@@ -80,6 +84,7 @@ export default {
     VolumeControlToggle,
     VolumeControl,
     ProgressTime,
+    ProgressTimeResetter,
     PlayingIndicator
   },
   data () {
@@ -110,6 +115,14 @@ export default {
       }
       this.stopSource()
       this.currentTimeCounter.clear()
+    },
+    resetProgressTime () {
+      const keepPlaying = this.isPlaying
+      this.pauseSound()
+      this.currentTimeCounter.backToZero()
+      if (keepPlaying) {
+        this.playSound()
+      }
     }
   }
 }
