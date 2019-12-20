@@ -14,7 +14,7 @@
           />
         </v-flex>
       </v-layout>
-      <v-layout>
+      <v-layout align-center>
         <v-flex>
           <PlayingToggle
             v-if="source"
