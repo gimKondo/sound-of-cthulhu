@@ -16,18 +16,16 @@
       </v-layout>
       <v-layout>
         <v-flex>
-          <v-btn-toggle multiple>
-            <PlayingToggle
-              v-if="source"
-              :isPlaying="isPlaying"
-              @play-sound="playSound"
-              @pause-sound="pauseSound"
-            />
-            <VolumeControlToggle
-              :isOpened="isVolumeControlOpened"
-              @toggle-volume-control="toggleVolumeControl"
-            />
-          </v-btn-toggle>
+          <PlayingToggle
+            v-if="source"
+            :isPlaying="isPlaying"
+            @play-sound="playSound"
+            @pause-sound="pauseSound"
+          />
+          <VolumeControlToggle
+            :isOpened="isVolumeControlOpened"
+            @toggle-volume-control="toggleVolumeControl"
+          />
         </v-flex>
         <v-flex>
           <ProgressTime
