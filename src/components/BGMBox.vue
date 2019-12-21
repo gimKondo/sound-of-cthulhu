@@ -14,9 +14,8 @@
           />
         </v-flex>
       </v-layout>
-      <v-layout>
+      <v-layout align-center>
         <v-flex>
-          <v-btn-toggle multiple>
             <PlayingToggle
               v-if="source"
               :isPlaying="isPlaying"
@@ -30,7 +29,6 @@
               :isOpened="isVolumeControlOpened"
               @toggle-volume-control="toggleVolumeControl"
             />
-          </v-btn-toggle>
         </v-flex>
         <v-flex>
           <ProgressTime

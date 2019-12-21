@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="toggle" color="grey darken-2" class="btn--active">
+  <v-btn @click="toggle" :input-value="isOpened" icon>
     <v-icon >volume_up</v-icon>
   </v-btn>
 </template>

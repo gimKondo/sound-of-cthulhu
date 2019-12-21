@@ -1,5 +1,5 @@
 <template>
-  <v-btn @click="emit" color="grey darken-2">
+  <v-btn @click="emit" icon>
     <v-icon>replay</v-icon>
   </v-btn>
 </template>
