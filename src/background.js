@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
 import {
   createProtocol,
   installVueDevtools
@@ -78,3 +78,97 @@ if (isDevelopment) {
     })
   }
 }
+
+import * as ID3 from 'id3-parser';
+
+const Discord = require('discord.js')
+const discordClient = new Discord.Client()
+
+const fs = require('fs')
+const REAL_VOLUME = 150
+let channel
+
+function play (connection, data) {
+  const path = data.filePath
+  // console.log(data.volume)
+  // console.log(data.volume / REAL_VOLUME)
+  // console.log(data.offset)
+  // console.log(data.filePath)
+  let option = { volume: data.volume / REAL_VOLUME}
+  if (data.offset != 0) {
+    option['seek'] = data.offset
+  }
+
+  const broadcast = discordClient.voice.createBroadcast()
+  const dispatcher = broadcast.play(path, option)
+  // const playSound = () => {
+  connection.play(broadcast)
+  dispatcher.on("error",error=>{console.error(error)});
+  connection.on("error",error=>{console.error(error)});
+  dispatcher.on('finish', () => {
+    //console.log(dispatcher.volume)
+    play(connection, {'filePath': data.filePath, 'volume': dispatcher.volume * REAL_VOLUME})
+  })
+}
+
+ipcMain.on('discordJoin', (event, data) => {
+
+  discordClient.on('message', async message => {
+    channel = message.channel
+    if (message.content == "/connect")
+    {
+      if (message.member.voice.channel) {
+	connection = await message.member.voice.channel.join()
+      } else {
+      	message.reply('You need to join a voice channel first!')
+      }
+    }
+  })
+
+  const token_config = require('./discord_token.js')
+  discordClient.login(token_config.token)
+})
+
+let strTitle
+let filePath
+ipcMain.on('discordPlay', (event, data) => {
+  const connections = discordClient.voice.connections
+  const connection = connections.first()
+  filePath = data.filePath
+
+  fs.readFile(data.filePath, function (err, mp3data) {
+    const tag = ID3.parse(mp3data)
+    const artist = tag['artist']
+    const title = tag['title']
+    if (strTitle != title) {
+      strTitle = title
+      channel.send(`♪ ${title}`)
+	.then(message => console.log(`Sent message: ${message.content}`))
+	.catch(console.error)
+    }
+  })
+  play(connection, data)
+})
+
+ipcMain.on('discordStop', (event, data) => {
+  console.log("call stop", playFlag)
+  if (data.filePath == filePath) {
+    for (const connection of discordClient.voice.connections.values()) {
+      const dispatcher = connection.dispatcher.broadcast.dispatcher
+      dispatcher.pause()
+    }
+  }
+})
+
+ipcMain.on('discordSoundChange', (event, data) => {
+  const connections = discordClient.voice.connections
+  const connection = connections.first()
+  const dispatcher = connection.dispatcher
+  // console.log(data.volume)
+  // console.log(data.volume / REAL_VOLUME)
+  for (const connection of discordClient.voice.connections.values()) {
+    const dispatcher = connection.dispatcher.broadcast.dispatcher
+    dispatcher.setVolume(data.volume / REAL_VOLUME)
+    console.log(dispatcher.volume)
+  }
+})
