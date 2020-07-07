@@ -8,7 +8,8 @@ module.exports = {
         win: {
           target: 'portable'
         }
-      }
+      },
+      externals: ['discord.js', '@discordjs/opus']
     }
   }
 }
