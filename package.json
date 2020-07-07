@@ -2,10 +2,21 @@
   "name": "sound-of-cthulhu",
   "version": "1.0.0",
   "description": "Sound management tool for TRPG session",
-  "author": { "name": "gimKondo", "email": "gim0kondo@gmaill.com", "url": "https://github.com/gimKondo" },
+  "author": {
+    "name": "gimKondo",
+    "email": "gim0kondo@gmaill.com",
+    "url": "https://github.com/gimKondo"
+  },
   "contributors": [
-    { "name": "u-ishii", "url": "https://github.com/u-ishii" },
-    { "name": "shiranuik", "email": "shiranui@woodpine.com", "url": "https://github.com/shiranuik" }
+    {
+      "name": "u-ishii",
+      "url": "https://github.com/u-ishii"
+    },
+    {
+      "name": "shiranuik",
+      "email": "shiranui@woodpine.com",
+      "url": "https://github.com/shiranuik"
+    }
   ],
   "private": true,
   "scripts": {
@@ -21,8 +32,12 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.3.2",
     "core-js": "^3.3.2",
+    "discord.js": "^12.2.0",
     "electron-json-storage": "^4.1.6",
+    "ffmpeg-static": "^4.2.4",
+    "id3-parser": "^2.0.0",
     "lodash": "^4.17.11",
     "lodash.assign": "^4.2.0",
     "vue": "^2.6.10",
