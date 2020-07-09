@@ -40,34 +40,34 @@ export default {
       this.$emit('remove-sound')
     },
     startSource (offset) {
-      if (this.context.deviceId != 'Discord API') {
-	this.source.start(undefined, offset)
+      if (this.context.deviceId !== 'Discord API') {
+        this.source.start(undefined, offset)
       } else {
-	ipcRenderer.send('discordPlay', {filePath: this.filePath, volume: this.volume, offset: offset} ) 
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
       }
       this.isPlaying = true
     },
     stopSource () {
-      if (this.context.deviceId != 'Discord API') {
-	this.source.stop()
-	this.reloadSource()
+      if (this.context.deviceId !== 'Discord API') {
+        this.source.stop()
+        this.reloadSource()
       } else {
-	ipcRenderer.send('discordStop', {filePath: this.filePath})
+        ipcRenderer.send('discordStop', { filePath: this.filePath })
       }
       this.isPlaying = false
     },
     reloadSource () {
-      if (this.context.deviceId != 'Discord API') {
-	this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-	this.source.connect(this.channelSplitter)
+      if (this.context.deviceId !== 'Discord API') {
+        this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
+        this.source.connect(this.channelSplitter)
       }
     },
     applyVolume (volume) {
-      if (this.context.deviceId != 'Discord API') {
-	this.gain.gain.value = toRealVolume(volume)
+      if (this.context.deviceId !== 'Discord API') {
+        this.gain.gain.value = toRealVolume(volume)
       } else {
-	this.$emit('apply-volume', volume)
-	ipcRenderer.send('discordSoundChange', {'filePath': this.filePath, 'volume': this.volume} )
+        this.$emit('apply-volume', volume)
+        ipcRenderer.send('discordSoundChange', { 'filePath': this.filePath, 'volume': this.volume })
       }
     },
     toggleVolumeControl () {

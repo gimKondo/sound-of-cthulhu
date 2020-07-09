@@ -79,16 +79,16 @@ export default {
     changeDestination (deviceId) {
       this.context.deviceId = deviceId
       // Since there is no official API, use the hacky method.
-      if (deviceId != 'Discord API') {
-	const destination = this.context.createMediaStreamDestination()
-	const audio = new Audio()
-	audio.srcObject = destination.stream
-	audio.setSinkId(deviceId)
-	this.channelSplitter.disconnect()
-	this.channelSplitter.connect(destination)
-	audio.play()
+      if (deviceId !== 'Discord API') {
+        const destination = this.context.createMediaStreamDestination()
+        const audio = new Audio()
+        audio.srcObject = destination.stream
+        audio.setSinkId(deviceId)
+        this.channelSplitter.disconnect()
+        this.channelSplitter.connect(destination)
+        audio.play()
       } else {
-	ipcRenderer.send('discordJoin')
+        ipcRenderer.send('discordJoin')
       }
     },
     saveSoundList () {
@@ -186,7 +186,7 @@ export default {
     this.context.onstatechange = () => this.$forceUpdate()
     this.channelSplitter.connect(this.context.destination)
     this.availableOutputDevices = await getAvailableOutputDevices()
-    this.availableSoundDevices = this.availableOutputDevices.concat("Discord API")
+    this.availableSoundDevices = this.availableOutputDevices.concat('Discord API')
 
     this.loadSoundList()
   },
