@@ -1,12 +1,17 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 
-import * as ID3 from 'id3-parser'
+const fs = require('fs')
+const ini = require('ini')
+const path = require('path')
+const Discord = require('discord.js')
+const discordClient = new Discord.Client()
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -24,8 +29,8 @@ function createWindow () {
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
-    createProtocol('app')
     // Load the index.html when not in development
+    createProtocol('app')
     win.loadURL('app://./index.html')
   }
 
@@ -81,20 +86,11 @@ if (isDevelopment) {
   }
 }
 
-const Discord = require('discord.js')
-const discordClient = new Discord.Client()
-const fs = require('fs')
-const REAL_VOLUME = 150
-
-function play (connection, data) {
-  const path = data.filePath
-  // console.log(data.volume)
-  // console.log(data.volume / REAL_VOLUME)
-  // console.log(data.offset)
-  // console.log(data.filePath)
-  const option = { volume: data.volume / REAL_VOLUME }
-  if (data.offset !== 0) {
-    option['seek'] = data.offset
+function playDiscordSound (connection, filePath, volume, offset) {
+  const path = filePath
+  const option = { volume: toRealVolume(volume) }
+  if (offset !== 0) {
+    option['seek'] = offset
   }
 
   const broadcast = discordClient.voice.createBroadcast()
@@ -104,15 +100,12 @@ function play (connection, data) {
   dispatcher.on('error', error => { console.error(error) })
   connection.on('error', error => { console.error(error) })
   dispatcher.on('finish', () => {
-    // console.log(dispatcher.volume)
-    play(connection, { 'filePath': data.filePath, 'volume': dispatcher.volume * REAL_VOLUME })
+    playDiscordSound(connection, filePath, toRealVolume(dispatcher.volume), offset)
   })
 }
 
-let channel
 ipcMain.on('discordJoin', (event, data) => {
   discordClient.on('message', async message => {
-    channel = message.channel
     if (message.content === ':soc: join') {
       if (message.member.voice.channel) {
         await message.member.voice.channel.join()
@@ -122,37 +115,61 @@ ipcMain.on('discordJoin', (event, data) => {
     }
   })
 
-  const tokenConfig = require('./discord_token.js')
-  discordClient.login(tokenConfig.token)
+  const userHome = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']
+  const pathConfig = path.join(userHome, 'discord_token.ini')
+
+  try {
+    fs.statSync(pathConfig)
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      const options = {
+	type: 'question',
+	title: 'No Token File',
+	message: 'No Token Config File',
+	detail: `There is no discord token configuration file in the ${pathConfig}.\nDo you want to create a template file?`,
+	buttons: ['OK', 'Cancel'],
+	cancelId: -1
+      }
+      const selected = dialog.showMessageBox(options)
+      if (selected == 0) {
+	fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
+	  if (err) throw err
+	  dialog.showMessageBox({type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}`})
+	})
+	return
+      } else {
+	return
+      }
+    } else {
+      dialog.showMessageBox({type: 'error', detail: error})
+    }
+  }
+
+  try {
+    var config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
+    console.log(config.discordToken)
+  } catch (error) {
+    dialog.showMessageBox({type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}`})
+  }
+  const returnPromise = discordClient.login(config.discordToken)
+	.then((data) => {
+	  dialog.showMessageBox({type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.'})
+	})
+	.catch((e) => {
+	  dialog.showMessageBox({type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}`})
+	})
 })
 
-let strTitle
-let filePath
+let filePathCurrentPlay
 ipcMain.on('discordPlay', (event, data) => {
   const connections = discordClient.voice.connections
   const connection = connections.first()
-  filePath = data.filePath
-
-  fs.readFile(data.filePath, (err, mp3data) => {
-    if (err) {
-      console.log(err)
-      return
-    }
-    const tag = ID3.parse(mp3data)
-    // const artist = tag['artist']
-    const title = tag['title']
-    if (strTitle !== title) {
-      strTitle = title
-      channel.send(`♪ ${title}`)
-        .then(message => console.log(`Sent message: ${message.content}`))
-        .catch(console.error)
-    }
-  })
-  play(connection, data)
+  filePathCurrentPlay = data.filePath
+  playDiscordSound(connection, data.filePath, data.volume, data.offset)
 })
 
 ipcMain.on('discordStop', (event, data) => {
-  if (data.filePath === filePath) {
+  if (data.filePath === filePathCurrentPlay) {
     for (const connection of discordClient.voice.connections.values()) {
       const dispatcher = connection.dispatcher.broadcast.dispatcher
       dispatcher.pause()
@@ -161,11 +178,16 @@ ipcMain.on('discordStop', (event, data) => {
 })
 
 ipcMain.on('discordSoundChange', (event, data) => {
-  // console.log(data.volume)
-  // console.log(data.volume / REAL_VOLUME)
   for (const connection of discordClient.voice.connections.values()) {
     const dispatcher = connection.dispatcher.broadcast.dispatcher
-    dispatcher.setVolume(data.volume / REAL_VOLUME)
-    console.log(dispatcher.volume)
+    dispatcher.setVolume(toRealVolume(data.volume))
   }
 })
+
+function toRealVolume(displayVolume) {
+  return displayVolume / 150
+}
+
+function toDisplayVolume(realVolume) {
+  return realVolume * 150
+}
