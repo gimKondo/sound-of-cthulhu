@@ -133,7 +133,7 @@ ipcMain.on('discordPlay', (event, data) => {
   const connection = connections.first()
   filePath = data.filePath
 
-  fs.readFile(data.filePath, function (err, mp3data) {
+  fs.readFile(data.filePath, (err, mp3data) => {
     if (err) {
       console.log(err)
       return
