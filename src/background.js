@@ -100,7 +100,7 @@ function playDiscordSound (connection, filePath, volume, offset) {
   dispatcher.on('error', error => { console.error(error) })
   connection.on('error', error => { console.error(error) })
   dispatcher.on('finish', () => {
-    playDiscordSound(connection, filePath, toRealVolume(dispatcher.volume), offset)
+    playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
   })
 }
 
@@ -115,7 +115,7 @@ ipcMain.on('discordJoin', (event, data) => {
     }
   })
 
-  const userHome = process.env[process.platform == 'win32' ? 'USERPROFILE' : 'HOME']
+  const userHome = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
   const pathConfig = path.join(userHome, 'discord_token.ini')
 
   try {
@@ -131,17 +131,17 @@ ipcMain.on('discordJoin', (event, data) => {
         cancelId: -1
       }
       const selected = dialog.showMessageBox(options)
-      if (selected == 0) {
+      if (selected === 0) {
         fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
-	  if (err) throw err
-	  dialog.showMessageBox({type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}`})
-	})
+          if (err) throw err
+          dialog.showMessageBox({ type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}` })
+        })
         return
       } else {
         return
       }
     } else {
-      dialog.showMessageBox({type: 'error', detail: error})
+      dialog.showMessageBox({ type: 'error', detail: error })
     }
   }
 
@@ -149,15 +149,16 @@ ipcMain.on('discordJoin', (event, data) => {
     var config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
     console.log(config.discordToken)
   } catch (error) {
-    dialog.showMessageBox({type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}`})
+    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}` })
   }
-  const returnPromise = discordClient.login(config.discordToken)
-	.then((data) => {
-	  dialog.showMessageBox({type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.'})
-	})
-	.catch((e) => {
-	  dialog.showMessageBox({type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}`})
-	})
+
+  discordClient.login(config.discordToken)
+    .then((data) => {
+      dialog.showMessageBox({ type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.' })
+    })
+    .catch((e) => {
+      dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
+    })
 })
 
 let filePathCurrentPlay
@@ -184,10 +185,10 @@ ipcMain.on('discordSoundChange', (event, data) => {
   }
 })
 
-function toRealVolume(displayVolume) {
+function toRealVolume (displayVolume) {
   return displayVolume / 150
 }
 
-function toDisplayVolume(realVolume) {
+function toDisplayVolume (realVolume) {
   return realVolume * 150
 }
