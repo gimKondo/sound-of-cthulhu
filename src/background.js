@@ -92,7 +92,7 @@ function play (connection, data) {
   // console.log(data.volume / REAL_VOLUME)
   // console.log(data.offset)
   // console.log(data.filePath)
-  let option = { volume: data.volume / REAL_VOLUME }
+  const option = { volume: data.volume / REAL_VOLUME }
   if (data.offset !== 0) {
     option['seek'] = data.offset
   }
