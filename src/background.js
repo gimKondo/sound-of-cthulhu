@@ -163,8 +163,7 @@ ipcMain.on('discordJoin', (event, data) => {
 
 let filePathCurrentPlay
 ipcMain.on('discordPlay', (event, data) => {
-  const connections = discordClient.voice.connections
-  const connection = connections.first()
+  const connection = discordClient.voice.connections.first()
   filePathCurrentPlay = data.filePath
   playDiscordSound(connection, data.filePath, data.volume, data.offset)
 })
