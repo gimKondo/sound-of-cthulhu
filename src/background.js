@@ -123,22 +123,22 @@ ipcMain.on('discordJoin', (event, data) => {
   } catch (error) {
     if (error.code === 'ENOENT') {
       const options = {
-	type: 'question',
-	title: 'No Token File',
-	message: 'No Token Config File',
-	detail: `There is no discord token configuration file in the ${pathConfig}.\nDo you want to create a template file?`,
-	buttons: ['OK', 'Cancel'],
-	cancelId: -1
+        type: 'question',
+        title: 'No Token File',
+        message: 'No Token Config File',
+        detail: `There is no discord token configuration file in the ${pathConfig}.\nDo you want to create a template file?`,
+        buttons: ['OK', 'Cancel'],
+        cancelId: -1
       }
       const selected = dialog.showMessageBox(options)
       if (selected == 0) {
-	fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
+        fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
 	  if (err) throw err
 	  dialog.showMessageBox({type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}`})
 	})
-	return
+        return
       } else {
-	return
+        return
       }
     } else {
       dialog.showMessageBox({type: 'error', detail: error})
