@@ -146,7 +146,7 @@ ipcMain.on('discordJoin', (event, data) => {
   }
 
   try {
-    var config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
+    const config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
     console.log(config.discordToken)
   } catch (error) {
     dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}` })
