@@ -1,5 +1,6 @@
 const path = require('path')
 const electron = require('electron')
+const { ipcRenderer } = require('electron')
 const fs = electron.remote.require('fs')
 
 export default {
@@ -39,21 +40,35 @@ export default {
       this.$emit('remove-sound')
     },
     startSource (offset) {
-      this.source.start(undefined, offset)
+      if (this.context.deviceId !== 'Discord API') {
+        this.source.start(undefined, offset)
+      } else {
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
+      }
       this.isPlaying = true
     },
     stopSource () {
-      this.source.stop()
-      this.reloadSource()
+      if (this.context.deviceId !== 'Discord API') {
+        this.source.stop()
+        this.reloadSource()
+      } else {
+        ipcRenderer.send('discordStop', { filePath: this.filePath })
+      }
       this.isPlaying = false
     },
     reloadSource () {
-      this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
-      this.source.connect(this.channelSplitter)
+      if (this.context.deviceId !== 'Discord API') {
+        this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
+        this.source.connect(this.channelSplitter)
+      }
     },
     applyVolume (volume) {
-      this.gain.gain.value = toRealVolume(volume)
-      this.$emit('apply-volume', volume)
+      if (this.context.deviceId !== 'Discord API') {
+        this.gain.gain.value = toRealVolume(volume)
+      } else {
+        this.$emit('apply-volume', volume)
+        ipcRenderer.send('discordSoundChange', { 'filePath': this.filePath, 'volume': this.volume })
+      }
     },
     toggleVolumeControl () {
       this.isVolumeControlOpened = !this.isVolumeControlOpened

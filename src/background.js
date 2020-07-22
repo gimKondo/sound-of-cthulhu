@@ -1,10 +1,17 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain, dialog } from 'electron'
 import {
   createProtocol,
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
+
+const fs = require('fs')
+const ini = require('ini')
+const path = require('path')
+const Discord = require('discord.js')
+const discordClient = new Discord.Client()
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -22,8 +29,8 @@ function createWindow () {
     win.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
-    createProtocol('app')
     // Load the index.html when not in development
+    createProtocol('app')
     win.loadURL('app://./index.html')
   }
 
@@ -77,4 +84,110 @@ if (isDevelopment) {
       app.quit()
     })
   }
+}
+
+function playDiscordSound (connection, filePath, volume, offset) {
+  const path = filePath
+  const option = { volume: toRealVolume(volume) }
+  if (offset !== 0) {
+    option['seek'] = offset
+  }
+
+  const broadcast = discordClient.voice.createBroadcast()
+  const dispatcher = broadcast.play(path, option)
+  // const playSound = () => {
+  connection.play(broadcast)
+  dispatcher.on('error', error => { console.error(error) })
+  connection.on('error', error => { console.error(error) })
+  dispatcher.on('finish', () => {
+    playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+  })
+}
+
+ipcMain.on('discordJoin', (event, data) => {
+  discordClient.on('message', async message => {
+    if (message.content === ':soc: join') {
+      if (message.member.voice.channel) {
+        await message.member.voice.channel.join()
+      } else {
+        message.reply('You need to join a voice channel first!')
+      }
+    }
+  })
+
+  const userHome = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
+  const pathConfig = path.join(userHome, 'discord_token.ini')
+
+  try {
+    fs.statSync(pathConfig)
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      const options = {
+        type: 'question',
+        title: 'No Token File',
+        message: 'No Token Config File',
+        detail: `There is no discord token configuration file in the ${pathConfig}.\nDo you want to create a template file?`,
+        buttons: ['OK', 'Cancel'],
+        cancelId: -1
+      }
+      const selected = dialog.showMessageBox(options)
+      if (selected === 0) {
+        fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
+          if (err) throw err
+          dialog.showMessageBox({ type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}` })
+        })
+        return
+      } else {
+        return
+      }
+    } else {
+      dialog.showMessageBox({ type: 'error', detail: error })
+    }
+  }
+
+  try {
+    const config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
+    console.log(config.discordToken)
+  } catch (error) {
+    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}` })
+  }
+
+  discordClient.login(config.discordToken)
+    .then((data) => {
+      dialog.showMessageBox({ type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.' })
+    })
+    .catch((e) => {
+      dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
+    })
+})
+
+let filePathCurrentPlay
+ipcMain.on('discordPlay', (event, data) => {
+  const connection = discordClient.voice.connections.first()
+  filePathCurrentPlay = data.filePath
+  playDiscordSound(connection, data.filePath, data.volume, data.offset)
+})
+
+ipcMain.on('discordStop', (event, data) => {
+  if (data.filePath === filePathCurrentPlay) {
+    for (const connection of discordClient.voice.connections.values()) {
+      const dispatcher = connection.dispatcher.broadcast.dispatcher
+      dispatcher.pause()
+    }
+  }
+})
+
+ipcMain.on('discordSoundChange', (event, data) => {
+  for (const connection of discordClient.voice.connections.values()) {
+    const dispatcher = connection.dispatcher.broadcast.dispatcher
+    dispatcher.setVolume(toRealVolume(data.volume))
+  }
+})
+
+function toRealVolume (displayVolume) {
+  return displayVolume / 150
+}
+
+function toDisplayVolume (realVolume) {
+  return realVolume * 150
 }
