@@ -147,18 +147,17 @@ ipcMain.on('discordJoin', (event, data) => {
 
   try {
     const config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
-    console.log(config.discordToken)
+    discordClient.login(config.discordToken)
+      .then((data) => {
+	dialog.showMessageBox({ type: 'info', detail: 'Success Discord Login.Please type ":soc: join" to discord workspace.' })
+      })
+      .catch((e) => {
+	dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
+      })
   } catch (error) {
-    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}` })
+    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}\n${error}` })
   }
 
-  discordClient.login(config.discordToken)
-    .then((data) => {
-      dialog.showMessageBox({ type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.' })
-    })
-    .catch((e) => {
-      dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
-    })
 })
 
 let filePathCurrentPlay
