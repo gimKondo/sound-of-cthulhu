@@ -6,10 +6,10 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 
-const fs = require('fs')
-const ini = require('ini')
-const path = require('path')
-const Discord = require('discord.js')
+import * as fs from 'fs'
+import * as ini from 'ini'
+import * as path from 'path'
+import * as Discord from 'discord.js'
 const discordClient = new Discord.Client()
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
