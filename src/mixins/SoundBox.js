@@ -69,10 +69,9 @@ export default {
       }
     },
     applyVolume (volume) {
-      if (this.context.deviceId !== 'Discord API') {
-        this.gain.gain.value = toRealVolume(volume)
-      } else {
-        this.$emit('apply-volume', volume)
+      this.gain.gain.value = toRealVolume(volume)
+      this.$emit('apply-volume', volume)
+      if (this.isDisordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordSoundChange', { 'filePath': this.filePath, 'volume': this.volume })
       }
     },
