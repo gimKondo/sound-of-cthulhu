@@ -98,7 +98,9 @@ function playDiscordSound (connection, filePath, volume, offset) {
   dispatcher.on('error', error => { console.error(error) })
   connection.on('error', error => { console.error(error) })
   dispatcher.on('finish', () => {
-    playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+    if (filePathCurrentPlay === filePath) {
+      playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+    }
   })
 }
 
