@@ -87,15 +87,13 @@ if (isDevelopment) {
 }
 
 function playDiscordSound (connection, filePath, volume, offset) {
-  const path = filePath
   const option = { volume: toRealVolume(volume) }
   if (offset !== 0) {
     option['seek'] = offset
   }
 
   const broadcast = discordClient.voice.createBroadcast()
-  const dispatcher = broadcast.play(path, option)
-  // const playSound = () => {
+  const dispatcher = broadcast.play(filePath, option)
   connection.play(broadcast)
   dispatcher.on('error', error => { console.error(error) })
   connection.on('error', error => { console.error(error) })
@@ -157,7 +155,6 @@ ipcMain.on('discordJoin', (event, data) => {
   } catch (error) {
     dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}\n${error}` })
   }
-
 })
 
 let filePathCurrentPlay
