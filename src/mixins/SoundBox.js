@@ -2,6 +2,7 @@ const path = require('path')
 const electron = require('electron')
 const { ipcRenderer } = require('electron')
 const fs = electron.remote.require('fs')
+const DISCORD_DEVICE_ID = 'Discord API'
 
 export default {
   props: {
@@ -39,34 +40,38 @@ export default {
     removeSound () {
       this.$emit('remove-sound')
     },
+    isDisordAPI (deviceId) {
+      return this.context.deviceId === DISCORD_DEVICE_ID
+    },
     startSource (offset) {
-      if (this.context.deviceId !== 'Discord API') {
-        this.source.start(undefined, offset)
-      } else {
+      if (this.isDisordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
+      } else {
+        this.source.start(undefined, offset)
       }
       this.isPlaying = true
     },
     stopSource () {
-      if (this.context.deviceId !== 'Discord API') {
+      if (this.isDisordAPI(this.context.deviceId)) {
+        ipcRenderer.send('discordStop', { filePath: this.filePath })
+      } else {
         this.source.stop()
         this.reloadSource()
-      } else {
-        ipcRenderer.send('discordStop', { filePath: this.filePath })
       }
       this.isPlaying = false
     },
     reloadSource () {
-      if (this.context.deviceId !== 'Discord API') {
+      if (this.isDisordAPI(this.context.deviceId)) {
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: 1, offset: 0 })
+      } else {
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
         this.source.connect(this.channelSplitter)
       }
     },
     applyVolume (volume) {
-      if (this.context.deviceId !== 'Discord API') {
-        this.gain.gain.value = toRealVolume(volume)
-      } else {
-        this.$emit('apply-volume', volume)
+      this.gain.gain.value = toRealVolume(volume)
+      this.$emit('apply-volume', volume)
+      if (this.isDisordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordSoundChange', { 'filePath': this.filePath, 'volume': this.volume })
       }
     },

@@ -6,10 +6,10 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 
-const fs = require('fs')
-const ini = require('ini')
-const path = require('path')
-const Discord = require('discord.js')
+import * as fs from 'fs'
+import * as ini from 'ini'
+import * as path from 'path'
+import * as Discord from 'discord.js'
 const discordClient = new Discord.Client()
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
@@ -87,20 +87,20 @@ if (isDevelopment) {
 }
 
 function playDiscordSound (connection, filePath, volume, offset) {
-  const path = filePath
   const option = { volume: toRealVolume(volume) }
   if (offset !== 0) {
     option['seek'] = offset
   }
 
   const broadcast = discordClient.voice.createBroadcast()
-  const dispatcher = broadcast.play(path, option)
-  // const playSound = () => {
+  const dispatcher = broadcast.play(filePath, option)
   connection.play(broadcast)
   dispatcher.on('error', error => { console.error(error) })
   connection.on('error', error => { console.error(error) })
   dispatcher.on('finish', () => {
-    playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+    if (filePathCurrentPlay === filePath) {
+      playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+    }
   })
 }
 
@@ -147,18 +147,16 @@ ipcMain.on('discordJoin', (event, data) => {
 
   try {
     const config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
-    console.log(config.discordToken)
+    discordClient.login(config.discordToken)
+      .then((data) => {
+        dialog.showMessageBox({ type: 'info', detail: 'Success Discord Login.Please type ":soc: join" to discord workspace.' })
+      })
+      .catch((e) => {
+        dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
+      })
   } catch (error) {
-    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}` })
+    dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}\n${error}` })
   }
-
-  discordClient.login(config.discordToken)
-    .then((data) => {
-      dialog.showMessageBox({ type: 'info', detail: 'Sucess Discord Login.Please type ":soc: join" to discord workspace.' })
-    })
-    .catch((e) => {
-      dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
-    })
 })
 
 let filePathCurrentPlay
