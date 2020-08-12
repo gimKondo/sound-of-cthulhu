@@ -1,0 +1,67 @@
+name: Electron Build
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macOS-10.15, windows-2016, ubuntu-18.04]
+
+    steps:
+      - name: Context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
+      - uses: actions/checkout@v2
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+              ${{ runner.os }}-build-${{ env.cache-name }}-
+              ${{ runner.os }}-build-
+              ${{ runner.os }}-
+
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: v12.7.0
+      - name: yarn install
+        run: |
+          yarn install
+          yarn postinstall
+
+      - name: Build for linux
+        if: matrix.os == 'ubuntu-18.04'
+        run: yarn electron:build --publish never --linux
+        env:
+          USE_HARD_LINKS: false
+
+      - name: Build for macOS
+        if: matrix.os == 'macOS-10.15'
+        run: yarn electron:build --publish never --mac
+        env:
+          USE_HARD_LINKS: false
+
+      - name: Build for Windows
+        if: matrix.os == 'windows-2016'
+        run: yarn electron:build --publish never --win
+        env:
+          USE_HARD_LINKS: false
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: 'dist_electron/sound-of-cthulhu*'
+          tag_name: ${{ github.ref }}-example
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
