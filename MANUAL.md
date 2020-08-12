@@ -40,11 +40,11 @@ https://discord.com/api/oauth2/authorize?client_id={YOUR_CLIENT_ID}&permissions=
 
 #### 注意事項
 
-現在、custom_emojiで「:soc:」を登録してjoinコマンドを発行しても入力を受け付けない。
+現在、custom_emojiで「:soc:」を登録してjoinコマンドを発行しても入力を受け付けない。  
 これはcustom_emojiのあとに暗黙的にidがつくため、文字列が一致しないため。
 
 ### 再生方法
 
-上記までの純美を行い、sound-of-cthulhuで再生ボタンを押す。
+上記までの純美を行い、sound-of-cthulhuで再生ボタンを押す。  
 他、通常のsound-of-cthuluhと同じ機能が利用可能。
 
