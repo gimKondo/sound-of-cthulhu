@@ -1,3 +1,5 @@
+# Sound of Cthulhu マニュアル
+
 ## Discord APIの利用方法
 
 ### 権限
@@ -47,4 +49,3 @@ https://discord.com/api/oauth2/authorize?client_id={YOUR_CLIENT_ID}&permissions=
 
 上記までの純美を行い、sound-of-cthulhuで再生ボタンを押す。  
 他、通常のsound-of-cthuluhと同じ機能が利用可能。
-
