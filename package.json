@@ -1,6 +1,6 @@
 {
   "name": "sound-of-cthulhu",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "Sound management tool for TRPG session",
   "author": { "name": "gimKondo", "email": "gim0kondo@gmaill.com", "url": "https://github.com/gimKondo" },
   "contributors": [
