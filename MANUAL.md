@@ -9,7 +9,7 @@
 - Botアプリケーションを作成(Discordのリファレンスを参照)
   - <https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot>
   - <https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links>
-- 作成したアプリケーションがサーバ上に現れ、Tokenが取得出来る事を確認する。
+- 作成したアプリケーションがサーバに現れるので、Tokenを取得して控えておく。
   - [SETTING]
     - [Bot]
       - [Copy] クリップボードにTokenがコピーされる
