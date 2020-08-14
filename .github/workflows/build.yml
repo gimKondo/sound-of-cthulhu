@@ -6,7 +6,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -14,11 +13,6 @@ jobs:
         os: [macOS-10.15, windows-2016]
 
     steps:
-      - name: Context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - uses: actions/checkout@v2
 
       - name: Cache node modules
@@ -29,9 +23,9 @@ jobs:
           path: ~/.npm
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-              ${{ runner.os }}-build-${{ env.cache-name }}-
-              ${{ runner.os }}-build-
-              ${{ runner.os }}-
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
 
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
@@ -57,7 +51,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          files: 'dist_electron/sound-of-cthulhu*'
+          files: "dist_electron/sound-of-cthulhu*"
           tag_name: ${{ github.ref }}-example
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
