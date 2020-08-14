@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [macOS-10.15, windows-2016]
+        os: [macOS-10.15, windows-2019]
 
     steps:
       - uses: actions/checkout@v2
@@ -43,7 +43,7 @@ jobs:
           USE_HARD_LINKS: false
 
       - name: Build for Windows
-        if: matrix.os == 'windows-2016'
+        if: matrix.os == 'windows-2019'
         run: yarn electron:build --publish never --win
         env:
           USE_HARD_LINKS: false
