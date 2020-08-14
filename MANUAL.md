@@ -2,24 +2,32 @@
 
 ## Discord APIの利用方法
 
-### DiscordでBotアプリケーションを作成
 この機能を使うにはDiscordワークスペースの管理者権限が必要です。
 
+### DiscordでBotアプリケーションの設定
 
 - Botアプリケーションを作成(Discordのリファレンスを参照)
   - <https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot>
   - <https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links>
-- Botには下記権限を与えること
-  - GENERAL PERMISSIONS
-    - View Channel
-  - Text Permissions
-    - Send Messages
-  - Voice Permissions
-    - Connect
-    - Speak
-- 作成したアプリケーションがサーバ上に現れ、Tokenが取得出来る事を確認する。  
-  - 招待リンクはこのようになる。  
-  - `https://discord.com/api/oauth2/authorize?client_id={YOUR_CLIENT_ID}&permissions=3148800&scope=bot`
+- 作成したアプリケーションがサーバ上に現れ、Tokenが取得出来る事を確認する。
+  - [SETTING]
+    - [Bot]
+      - [Copy] クリップボードにTokenがコピーされる
+- 招待リンクを作成し、サーバ上にアプリケーションを追加する。
+  - [SETTING]
+    - [OAuth2]
+      - [SCOPES]
+        - [bot] にチェックを入れ以下の権限を与える
+          - GENERAL PERMISSIONS
+            - View Channel
+          - Text Permissions
+            - Send Messages
+          - Voice Permissions
+            - Connect
+            - Speak
+  - 上記画面に招待リンクが作成される
+    - 招待リンクはこのようになる。
+      - `https://discord.com/api/oauth2/authorize?client_id={YOUR_CLIENT_ID}&permissions=3148800&scope=bot`
 
 
 ### Tokenの設定方法
