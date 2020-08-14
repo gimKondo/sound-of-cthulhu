@@ -3,6 +3,8 @@
 ## Discord APIの利用方法
 
 ### DiscordでBotアプリケーションを作成
+この機能を使うにはDiscordワークスペースの管理者権限が必要です。
+
 
 - Botアプリケーションを作成(Discordのリファレンスを参照)
   - <https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot>
