@@ -5,6 +5,7 @@
 Sound management tool for TRPG session
 
 ## Tools version
+
 - Node.js 12.6.0
 - npm 6.9.0
 - yarn 1.16.1
@@ -41,7 +42,16 @@ yarn run lint
 ```
 
 ### Customize configuration
+
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+## How to Release
+
+1. update version on package.json
+2. create Pull Request to master
+3. merge Pull Request
+   - release is created by GitHub Action
+
 ## Sample sound
+
 - 至福の隙間([魔王魂](https://maoudamashii.jokersounds.com/))
