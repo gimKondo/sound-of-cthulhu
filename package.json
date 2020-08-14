@@ -2,10 +2,21 @@
   "name": "sound-of-cthulhu",
   "version": "1.2.0",
   "description": "Sound management tool for TRPG session",
-  "author": { "name": "gimKondo", "email": "gim0kondo@gmaill.com", "url": "https://github.com/gimKondo" },
+  "author": {
+    "name": "gimKondo",
+    "email": "gim0kondo@gmaill.com",
+    "url": "https://github.com/gimKondo"
+  },
   "contributors": [
-    { "name": "u-ishii", "url": "https://github.com/u-ishii" },
-    { "name": "shiranuik", "email": "shiranui@woodpine.com", "url": "https://github.com/shiranuik" }
+    {
+      "name": "u-ishii",
+      "url": "https://github.com/u-ishii"
+    },
+    {
+      "name": "shiranuik",
+      "email": "shiranui@woodpine.com",
+      "url": "https://github.com/shiranuik"
+    }
   ],
   "private": true,
   "scripts": {
@@ -40,7 +51,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
-    "electron": "^4.0.0",
+    "electron": "^9.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.9.0",
