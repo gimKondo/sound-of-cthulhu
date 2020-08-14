@@ -39,20 +39,31 @@ jobs:
         run: |
           yarn install
           yarn postinstall
+
       - name: Build for macOS
         if: matrix.os == 'macOS-10.15'
         run: yarn electron:build --publish never --mac
         env:
           USE_HARD_LINKS: false
+      - name: Create GitHub Release(Mac)
+        if: matrix.os == 'macOS-10.15'
+        uses: softprops/action-gh-release@v1
+        with:
+          files: "dist_electron/sound-of-cthulhu*.dmg"
+          tag_name: ${{ env.RELEASE_VERSION }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build for Windows
         if: matrix.os == 'windows-2019'
         run: yarn electron:build --publish never --win
         env:
           USE_HARD_LINKS: false
-      - name: Create GitHub Release
+      - name: Create GitHub Release(Windows)
+        if: matrix.os == 'windows-2019'
         uses: softprops/action-gh-release@v1
         with:
-          files: "dist_electron/sound-of-cthulhu*"
+          files: "dist_electron/sound-of-cthulhu*.exe"
           tag_name: ${{ env.RELEASE_VERSION }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
