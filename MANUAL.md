@@ -6,29 +6,29 @@
 
 ### DiscordでBotアプリケーションの設定
 
-- Botアプリケーションを作成(Discordのリファレンスを参照)
-  - <https://discordjs.guide/preparations/setting-up-a-bot-application.html#creating-your-bot>
-  - <https://discordjs.guide/preparations/adding-your-bot-to-servers.html#bot-invite-links>
-- 作成したアプリケーションがサーバに現れるので、Tokenを取得して控えておく。
-  - [SETTING]
-    - [Bot]
-      - [Copy] クリップボードにTokenがコピーされる
-- 招待リンクを作成し、サーバ上にアプリケーションを追加する。
-  - [SETTING]
-    - [OAuth2]
-      - [SCOPES]
-        - [bot] にチェックを入れ以下の権限を与える
-          - GENERAL PERMISSIONS
-            - View Channel
-          - Text Permissions
-            - Send Messages
-          - Voice Permissions
-            - Connect
-            - Speak
-  - 上記画面に招待リンクが作成される
-    - 招待リンクはこのようになる。
-      - `https://discord.com/api/oauth2/authorize?client_id={YOUR_CLIENT_ID}&permissions=3148800&scope=bot`
-
+1. ブラウザで[Discordにログイン](https://discordapp.com/login)する
+2. [Developer Portal](https://discord.com/developers/applications)でApplicationを作成し、Botを追加する
+    - [公式リファレンス](https://discordjs.guide/preparations/setting-up-a-bot-application.html)を参照
+    - アプリ名やBot名、アイコン等は任意で良い
+3. BotのTokenを取得して、控えておく
+    1. SETTINGS-Botを開く
+    2. Build-A-BotのTOKENにあるCopyボタンを押すとクリップボードにコピーされる
+4. 招待リンクを作成する
+    1. SETTINGS-OAuth2を開く
+    2. SCOPESのbotをチェック
+    3. BOT PERMISSIONSで以下をチェック
+        - GENERAL PERMISSIONS
+          - View Channel
+        - Text Permissions
+          - Send Messages
+        - Voice Permissions
+          - Connect
+          - Speak
+    4. SCOPES欄に招待リンクが作成される
+5. 招待リンクをブラウザで開く
+6. 利用したいDiscordサーバを選択し、追加する
+7. 対象のサーバに追加されたことを確認する
+    - 対象サーバのgeneralに、追加された旨のメッセージがポストされることで確認できる
 
 ### Tokenの設定方法
 
@@ -37,7 +37,6 @@
 3. ダイアログが出て、表示されたパスに設定用のiniファイルが作成される
 4. iniファイルにTokenを入力するようになっているので、テキストエディタでTokenを入力する。
 5. 再度、デバイスリストから「Discord API」を選択
-
 
 ### アプリケーションをチャンネルに追加する方法
 
