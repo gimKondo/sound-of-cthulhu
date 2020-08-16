@@ -97,7 +97,7 @@ if (isDevelopment) {
 function playDiscordSound (connection, filePath, volume, offset) {
   const option = { volume: toRealVolume(volume) }
   if (offset !== 0) {
-    option['seek'] = offset
+    option.seek = offset
   }
 
   const broadcast = discordClient.voice.createBroadcast()
@@ -114,12 +114,19 @@ function playDiscordSound (connection, filePath, volume, offset) {
 
 ipcMain.on('discordJoin', (event, data) => {
   discordClient.on('message', async message => {
-    if (message.content === ':soc: join') {
-      if (message.member.voice.channel) {
-        await message.member.voice.channel.join()
-      } else {
-        message.reply('You need to join a voice channel first!')
-      }
+    switch (message.content) {
+      case ':soc: join':
+        if (message.member.voice.channel) {
+          await message.member.voice.channel.join()
+        } else {
+          message.reply('You need to join a voice channel first!')
+        }
+        break
+      case ':soc: leave':
+        if (message.member.voice.channel) {
+          await message.member.voice.channel.leave()
+        }
+        break
     }
   })
 
