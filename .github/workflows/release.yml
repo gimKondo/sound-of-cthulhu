@@ -38,7 +38,7 @@ jobs:
       - name: Use Node.js 12.x
         uses: actions/setup-node@v1
         with:
-          node-version: v12.7.0
+          node-version: v12.18.2
       - name: yarn install
         run: |
           yarn install

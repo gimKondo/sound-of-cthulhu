@@ -6,7 +6,8 @@ Sound management tool for TRPG session
 
 ## Tools version
 
-- Node.js 12.6.0
+- Node.js 12.18.2
+  - Node.js is managed by nodenv
 - Python2.7
 - npm 6.9.0
 - yarn 1.16.1
