@@ -14,7 +14,7 @@
         <span>Load</span>
       </v-tooltip>
       <OutputDeviceSelect
-        :items="availableOutputDevices"
+        :items="availableSoundDevices"
         @input="changeDestination"
       />
     </v-layout>
@@ -62,6 +62,8 @@ const { dialog } = require('electron').remote
 const path = require('path')
 const storage = require('electron-json-storage')
 
+const { ipcRenderer } = require('electron')
+
 const initialVolume = 50
 
 export default {
@@ -75,14 +77,19 @@ export default {
   },
   methods: {
     changeDestination (deviceId) {
+      this.context.deviceId = deviceId
       // Since there is no official API, use the hacky method.
-      const destination = this.context.createMediaStreamDestination()
-      const audio = new Audio()
-      audio.srcObject = destination.stream
-      audio.setSinkId(deviceId)
-      this.channelSplitter.disconnect()
-      this.channelSplitter.connect(destination)
-      audio.play()
+      if (deviceId !== 'Discord API') {
+        const destination = this.context.createMediaStreamDestination()
+        const audio = new Audio()
+        audio.srcObject = destination.stream
+        audio.setSinkId(deviceId)
+        this.channelSplitter.disconnect()
+        this.channelSplitter.connect(destination)
+        audio.play()
+      } else {
+        ipcRenderer.send('discordJoin')
+      }
     },
     saveSoundList () {
       const soundList = {
@@ -143,8 +150,8 @@ export default {
       this.applyVolume(this.SEs, targetIndex, volume)
     },
     addSound (onSelectFile) {
-      let window = remote.getCurrentWindow()
-      let options = {
+      const window = remote.getCurrentWindow()
+      const options = {
         title: 'File open',
         filters: [
           { name: 'sound', extensions: ['mp3'] }
@@ -179,6 +186,8 @@ export default {
     this.context.onstatechange = () => this.$forceUpdate()
     this.channelSplitter.connect(this.context.destination)
     this.availableOutputDevices = await getAvailableOutputDevices()
+    this.availableSoundDevices = this.availableOutputDevices.concat('Discord API')
+
     this.loadSoundList()
   },
   data () {
@@ -188,6 +197,7 @@ export default {
       channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
       availableOutputDevices: [],
+      availableSoundDevices: [],
       BGMs: [],
       SEs: [],
       snackbar: false,

@@ -1,11 +1,27 @@
 {
   "name": "sound-of-cthulhu",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Sound management tool for TRPG session",
-  "author": { "name": "gimKondo", "email": "gim0kondo@gmaill.com", "url": "https://github.com/gimKondo" },
+  "author": {
+    "name": "gimKondo",
+    "email": "gim0kondo@gmaill.com",
+    "url": "https://github.com/gimKondo"
+  },
   "contributors": [
-    { "name": "u-ishii", "url": "https://github.com/u-ishii" },
-    { "name": "shiranuik", "email": "shiranui@woodpine.com", "url": "https://github.com/shiranuik" }
+    {
+      "name": "u-ishii",
+      "url": "https://github.com/u-ishii"
+    },
+    {
+      "name": "shiranuik",
+      "email": "shiranui@woodpine.com",
+      "url": "https://github.com/shiranuik"
+    },
+    {
+      "name": "cahlchang(morin_river)",
+      "email": "kahlua.dane@gmail.com",
+      "url": "https://github.com/cahlchang"
+    }
   ],
   "private": true,
   "scripts": {
@@ -21,9 +37,13 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "@discordjs/opus": "^0.3.2",
     "core-js": "^3.3.2",
+    "discord.js": "^12.2.0",
     "electron-json-storage": "^4.1.6",
-    "lodash": "^4.17.11",
+    "ffmpeg-static": "^4.2.4",
+    "id3-parser": "^2.0.0",
+    "lodash": "^4.17.19",
     "lodash.assign": "^4.2.0",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
@@ -40,7 +60,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
-    "electron": "^4.0.0",
+    "electron": "^9.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.9.0",
