@@ -150,8 +150,8 @@ export default {
       this.applyVolume(this.SEs, targetIndex, volume)
     },
     addSound (onSelectFile) {
-      let window = remote.getCurrentWindow()
-      let options = {
+      const window = remote.getCurrentWindow()
+      const options = {
         title: 'File open',
         filters: [
           { name: 'sound', extensions: ['mp3'] }
@@ -197,6 +197,7 @@ export default {
       channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
       availableOutputDevices: [],
+      availableSoundDevices: [],
       BGMs: [],
       SEs: [],
       snackbar: false,
