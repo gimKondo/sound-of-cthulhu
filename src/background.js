@@ -138,7 +138,7 @@ ipcMain.on('discordJoin', (event, data) => {
         buttons: ['OK', 'Cancel'],
         cancelId: -1
       }
-      const selected = dialog.showMessageBox(options)
+      const selected = dialog.showMessageBoxSync(options)
       if (selected === 0) {
         fs.writeFile(pathConfig, 'discordToken = "your token"', function (err) {
           if (err) throw err
