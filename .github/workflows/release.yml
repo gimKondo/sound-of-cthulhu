@@ -10,12 +10,12 @@ jobs:
 
     env:
       MAC_OS_VERSION: macOS-10.15
-      WIN_OS_VERSION: windows-2019
+      WIN_OS_VERSION: windows-2016
 
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
-        os: [macOS-10.15, windows-2019]
+        os: [macOS-10.15, windows-2016]
 
     steps:
       - uses: actions/checkout@v2
