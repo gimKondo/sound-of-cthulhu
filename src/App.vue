@@ -14,6 +14,13 @@
       >
         <span class="mr-2">Latest Release</span>
       </v-btn>
+      <v-btn
+        flat
+        href="https://github.com/gimKondo/sound-of-cthulhu/blob/master/README.md"
+        target="_blank"
+      >
+        <span class="mr-2">MANUAL</span>
+      </v-btn>
     </v-toolbar>
 
     <v-content>
