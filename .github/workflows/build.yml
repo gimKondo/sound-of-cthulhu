@@ -14,7 +14,7 @@ jobs:
       matrix:
         # この中でenvにアクセスできないので直書き
         # Macは時間がかかるので一旦除外
-        os: [windows-2019]
+        os: [windows-2016]
         # os: [macOS-10.15, windows-2019]
 
     steps:
