@@ -10,8 +10,10 @@ import * as fs from 'fs'
 import * as ini from 'ini'
 import * as path from 'path'
 import * as Discord from 'discord.js'
-const discordClient = new Discord.Client()
 
+import * as DiscordMsg from './services/DiscordMsg'
+
+const discordClient = new Discord.Client()
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -114,15 +116,16 @@ function playDiscordSound (connection, filePath, volume, offset) {
 
 ipcMain.on('discordJoin', (event, data) => {
   discordClient.on('message', async message => {
-    switch (message.content) {
-      case ':soc: join':
+    const msgType = DiscordMsg.judgeType(message.content)
+    switch (msgType) {
+      case DiscordMsg.MSG_TYPE_JOIN:
         if (message.member.voice.channel) {
           await message.member.voice.channel.join()
         } else {
           message.reply('You need to join a voice channel first!')
         }
         break
-      case ':soc: leave':
+      case DiscordMsg.MSG_TYPE_LEAVE:
         if (message.member.voice.channel) {
           await message.member.voice.channel.leave()
         }
@@ -151,13 +154,11 @@ ipcMain.on('discordJoin', (event, data) => {
           if (err) throw err
           dialog.showMessageBox({ type: 'info', detail: `Saved!\nWrite your discord token to ${pathConfig}` })
         })
-        return
-      } else {
-        return
       }
     } else {
       dialog.showMessageBox({ type: 'error', detail: error })
     }
+    return
   }
 
   try {
