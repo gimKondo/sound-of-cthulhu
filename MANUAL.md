@@ -51,4 +51,4 @@
 ### 再生方法
 
 上記までの純美を行い、sound-of-cthulhuで再生ボタンを押す。  
-他、通常のsound-of-cthuluhと同じ機能が利用可能。
+他、通常のsound-of-cthulhuと同じ機能が利用可能。
