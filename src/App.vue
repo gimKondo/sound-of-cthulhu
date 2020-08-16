@@ -16,7 +16,7 @@
       </v-btn>
       <v-btn
         flat
-        href="https://github.com/gimKondo/sound-of-cthulhu/blob/master/README.md"
+        href="https://github.com/gimKondo/sound-of-cthulhu/blob/master/MANUAL.md"
         target="_blank"
       >
         <span class="mr-2">MANUAL</span>
