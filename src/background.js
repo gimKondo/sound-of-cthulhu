@@ -131,7 +131,7 @@ ipcMain.on('discordJoin', (event, data) => {
   })
 
   const userHome = process.env[process.platform === 'win32' ? 'USERPROFILE' : 'HOME']
-  const pathConfig = path.join(userHome, 'discord_token.ini')
+  const pathConfig = path.join(userHome, 'sound_of_cthulhu_discord_token.ini')
 
   try {
     fs.statSync(pathConfig)
