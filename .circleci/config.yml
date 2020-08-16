@@ -28,5 +28,6 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run only lint
+      # run unit test and lint
+      - run: yarn test:unit
       - run: yarn ci:lint
