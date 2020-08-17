@@ -78,8 +78,8 @@ export default {
   methods: {
     changeDestination (deviceId) {
       this.context.deviceId = deviceId
-      // Since there is no official API, use the hacky method.
       if (deviceId !== 'Discord API') {
+        // Since there is no official API, use the hacky method.
         const destination = this.context.createMediaStreamDestination()
         const audio = new Audio()
         audio.srcObject = destination.stream
