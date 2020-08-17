@@ -1,13 +1,17 @@
 Fixed # .(issue ID)
 
 ## Purpose
+
 - a
 - b
 - c
 
-## Extra Messages
+## Changes
+
 - x
 - y
 - z
 
-@gimKondo (or some reviewers)
+## (Optional)Extra Messages
+
+Write something supplementary.
