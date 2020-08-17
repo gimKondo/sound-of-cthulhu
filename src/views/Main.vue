@@ -88,7 +88,13 @@ export default {
         this.channelSplitter.connect(destination)
         audio.play()
       } else {
-        ipcRenderer.send('discordJoin')
+        ipcRenderer.invoke('discordJoin').then(({ isSuccess }) => {
+          if (isSuccess) {
+            this.showSnackbar('Success to login Discord.\nPlease type ":soc: join" on discord text channel.', 'info')
+          }
+        }).catch((err) => {
+          this.showSnackbar(err, 'error')
+        })
       }
     },
     saveSoundList () {
