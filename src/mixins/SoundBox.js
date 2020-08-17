@@ -40,11 +40,11 @@ export default {
     removeSound () {
       this.$emit('remove-sound')
     },
-    isDisordAPI (deviceId) {
+    isDiscordAPI (deviceId) {
       return this.context.deviceId === DISCORD_DEVICE_ID
     },
     startSource (offset) {
-      if (this.isDisordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
       } else {
         this.source.start(undefined, offset)
@@ -52,7 +52,7 @@ export default {
       this.isPlaying = true
     },
     stopSource () {
-      if (this.isDisordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordStop', { filePath: this.filePath })
       } else {
         this.source.stop()
@@ -61,7 +61,7 @@ export default {
       this.isPlaying = false
     },
     reloadSource () {
-      if (this.isDisordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: 1, offset: 0 })
       } else {
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
@@ -71,7 +71,7 @@ export default {
     applyVolume (volume) {
       this.gain.gain.value = toRealVolume(volume)
       this.$emit('apply-volume', volume)
-      if (this.isDisordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI(this.context.deviceId)) {
         ipcRenderer.send('discordSoundChange', { filePath: this.filePath, volume: this.volume })
       }
     },
