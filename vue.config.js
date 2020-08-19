@@ -10,9 +10,9 @@ module.exports = {
           'node_modules/ffmpeg-static'
         ],
         extraFiles: {
-          'from': 'node_modules/ffmpeg-static',
-          'to': './Resources/app/node_modules/ffmpeg-static/',
-          'filter': ['**/*']
+          from: 'node_modules/ffmpeg-static',
+          to: './Resources/app/node_modules/ffmpeg-static/',
+          filter: ['**/*']
         },
         win: {
           target: 'portable'

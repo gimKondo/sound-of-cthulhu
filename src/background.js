@@ -114,7 +114,7 @@ function playDiscordSound (connection, filePath, volume, offset) {
   })
 }
 
-ipcMain.on('discordJoin', (event, data) => {
+ipcMain.handle('discordJoin', async (event, data) => {
   discordClient.on('message', async message => {
     const msgType = DiscordMsg.judgeType(message.content)
     switch (msgType) {
@@ -158,21 +158,22 @@ ipcMain.on('discordJoin', (event, data) => {
     } else {
       dialog.showMessageBox({ type: 'error', detail: error })
     }
-    return
+    return { isSuccess: false }
   }
 
   try {
     const config = ini.parse(fs.readFileSync(pathConfig, 'utf-8'))
-    discordClient.login(config.discordToken)
-      .then((data) => {
-        dialog.showMessageBox({ type: 'info', detail: 'Success Discord Login.Please type ":soc: join" to discord workspace.' })
-      })
-      .catch((e) => {
-        dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
-      })
+    try {
+      await discordClient.login(config.discordToken)
+      console.log('Success to login Discord.')
+      return { isSuccess: true }
+    } catch (e) {
+      dialog.showMessageBox({ type: 'error', detail: `The token is illegal.\nPlease check to ${pathConfig}` })
+    }
   } catch (error) {
     dialog.showMessageBox({ type: 'error', detail: `The format is wrong.\nPlease check to ${pathConfig}\n${error}` })
   }
+  return { isSuccess: false }
 })
 
 let filePathCurrentPlay
