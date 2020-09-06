@@ -45,11 +45,16 @@ export default {
     },
     startSource (offset) {
       if (this.isDiscordAPI(this.context.deviceId)) {
-        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset, loop: this.loop })
+        if (this.loop) {
+          // Because rendering process cannot detect end of sound on Discord mode,
+          // don't turn isPlaying flag on for not looped sound.
+          this.isPlaying = true
+        }
       } else {
         this.source.start(undefined, offset)
+        this.isPlaying = true
       }
-      this.isPlaying = true
     },
     stopSource () {
       if (this.isDiscordAPI(this.context.deviceId)) {
