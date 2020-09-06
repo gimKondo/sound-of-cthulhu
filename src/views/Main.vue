@@ -164,14 +164,13 @@ export default {
         ],
         properties: ['openFile']
       }
-      dialog.showOpenDialog(window, options,
-        (filenames) => {
-          onSelectFile({
-            filePath: filenames[0],
-            volume: initialVolume
-          })
-        }
-      )
+      const filenames = dialog.showOpenDialogSync(window, options)
+      if (filenames) {
+        onSelectFile({
+          filePath: filenames[0],
+          volume: initialVolume
+        })
+      }
     },
     removeSound (sounds, targetIndex) {
       const targetFilePath = sounds[targetIndex].filePath
