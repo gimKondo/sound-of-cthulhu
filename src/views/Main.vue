@@ -56,6 +56,7 @@
 import OutputDeviceSelect from '@/components/OutputDeviceSelect.vue'
 import BGMList from '@/components/BGMList.vue'
 import SEList from '@/components/SEList.vue'
+import * as DiscordUtil from '@/services/DiscordUtil'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
@@ -78,7 +79,7 @@ export default {
   methods: {
     changeDestination (deviceId) {
       this.context.deviceId = deviceId
-      if (deviceId !== 'Discord API') {
+      if (deviceId !== DiscordUtil.DEVICE_ID) {
         // Since there is no official API, use the hacky method.
         const destination = this.context.createMediaStreamDestination()
         const audio = new Audio()
@@ -191,7 +192,7 @@ export default {
     this.context.onstatechange = () => this.$forceUpdate()
     this.channelSplitter.connect(this.context.destination)
     this.availableOutputDevices = await getAvailableOutputDevices()
-    this.availableSoundDevices = this.availableOutputDevices.concat('Discord API')
+    this.availableSoundDevices = this.availableOutputDevices.concat(DiscordUtil.DEVICE_ID)
 
     this.loadSoundList()
   },

@@ -1,7 +1,8 @@
 # Sound of Cthulhu マニュアル
 
-## Discord APIの利用方法
+## Discord Modeの利用方法
 
+このモードを使うと、Sound of Cthulhuで再生する音声をDiscordのBotから流せます。
 この機能を使うにはDiscordワークスペースの管理者権限が必要です。
 
 ### DiscordでBotアプリケーションの設定
@@ -33,10 +34,10 @@
 ### Tokenの設定方法
 
 1. アプリケーション作成時に取得しておいたTokenを用意する。
-2. デバイスリストから「Discord API」を選択
+2. デバイスリストから「Discord Mode」を選択
 3. ダイアログが出て、表示されたパスに設定用のiniファイルが作成される
 4. iniファイルにTokenを入力するようになっているので、テキストエディタでTokenを入力する。
-5. 再度、デバイスリストから「Discord API」を選択
+5. 再度、デバイスリストから「Discord Mode」を選択
 
 ### アプリケーションをチャンネルに追加する方法
 

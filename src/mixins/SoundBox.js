@@ -2,7 +2,7 @@ const path = require('path')
 const electron = require('electron')
 const { ipcRenderer } = require('electron')
 const fs = electron.remote.require('fs')
-const DISCORD_DEVICE_ID = 'Discord API'
+const DiscordUtil = require('../services/DiscordUtil')
 
 export default {
   props: {
@@ -41,7 +41,7 @@ export default {
       this.$emit('remove-sound')
     },
     isDiscordAPI () {
-      return this.context.deviceId === DISCORD_DEVICE_ID
+      return this.context.deviceId === DiscordUtil.DEVICE_ID
     },
     startSource (offset) {
       if (this.isDiscordAPI()) {
