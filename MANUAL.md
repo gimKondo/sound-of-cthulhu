@@ -6,7 +6,7 @@
 
 ### DiscordでBotアプリケーションの設定
 
-1. ブラウザで[Discordにログイン](https://discordapp.com/login)する
+1. Webブラウザ(Chrome・Firefoxなど)で[Discordにログイン](https://discordapp.com/login)する
 2. [Developer Portal](https://discord.com/developers/applications)でApplicationを作成し、Botを追加する
     - [公式リファレンス](https://discordjs.guide/preparations/setting-up-a-bot-application.html)を参照
     - アプリ名やBot名、アイコン等は任意で良い
