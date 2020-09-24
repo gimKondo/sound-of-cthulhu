@@ -2,7 +2,7 @@ const path = require('path')
 const electron = require('electron')
 const { ipcRenderer } = require('electron')
 const fs = electron.remote.require('fs')
-const DISCORD_DEVICE_ID = 'Discord API'
+const DiscordUtil = require('../services/DiscordUtil')
 
 export default {
   props: {
@@ -40,19 +40,24 @@ export default {
     removeSound () {
       this.$emit('remove-sound')
     },
-    isDiscordAPI (deviceId) {
-      return this.context.deviceId === DISCORD_DEVICE_ID
+    isDiscordAPI () {
+      return this.context.deviceId === DiscordUtil.DEVICE_ID
     },
     startSource (offset) {
-      if (this.isDiscordAPI(this.context.deviceId)) {
-        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
+      if (this.isDiscordAPI()) {
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset, loop: this.loop })
+        if (this.loop) {
+          // Because rendering process cannot detect end of sound on Discord mode,
+          // don't turn isPlaying flag on for not looped sound.
+          this.isPlaying = true
+        }
       } else {
         this.source.start(undefined, offset)
+        this.isPlaying = true
       }
-      this.isPlaying = true
     },
     stopSource () {
-      if (this.isDiscordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI()) {
         ipcRenderer.send('discordStop', { filePath: this.filePath })
       } else {
         this.source.stop()
@@ -61,7 +66,7 @@ export default {
       this.isPlaying = false
     },
     reloadSource () {
-      if (this.isDiscordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI()) {
         ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: 1, offset: 0 })
       } else {
         this.source = initializeSource(this.context, this.decodedSoundBuffer, this.loop)
@@ -71,7 +76,7 @@ export default {
     applyVolume (volume) {
       this.gain.gain.value = toRealVolume(volume)
       this.$emit('apply-volume', volume)
-      if (this.isDiscordAPI(this.context.deviceId)) {
+      if (this.isDiscordAPI()) {
         ipcRenderer.send('discordSoundChange', { filePath: this.filePath, volume: this.volume })
       }
     },

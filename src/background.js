@@ -96,7 +96,7 @@ if (isDevelopment) {
   }
 }
 
-function playDiscordSound (connection, filePath, volume, offset) {
+function playDiscordSoundLoop (connection, filePath, volume, offset) {
   const option = { volume: toRealVolume(volume) }
   if (offset !== 0) {
     option.seek = offset
@@ -109,8 +109,25 @@ function playDiscordSound (connection, filePath, volume, offset) {
   connection.on('error', error => { console.error(error) })
   dispatcher.on('finish', () => {
     if (filePathCurrentPlay === filePath) {
-      playDiscordSound(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
+      playDiscordSoundLoop(connection, filePath, toDisplayVolume(dispatcher.volume), offset)
     }
+  })
+}
+
+function playDiscordSoundOnce (connection, filePath, volume, offset) {
+  const option = { volume: toRealVolume(volume) }
+  if (offset !== 0) {
+    option.seek = offset
+  }
+
+  const broadcast = discordClient.voice.createBroadcast()
+  const dispatcher = broadcast.play(filePath, option)
+  connection.play(broadcast)
+  dispatcher.on('error', error => { console.error(error) })
+  connection.on('error', error => { console.error(error) })
+  dispatcher.on('finish', () => {
+    console.log('finish sound on Discord')
+    dispatcher.destroy()
   })
 }
 
@@ -179,8 +196,12 @@ ipcMain.handle('discordJoin', async (event, data) => {
 let filePathCurrentPlay
 ipcMain.on('discordPlay', (event, data) => {
   const connection = discordClient.voice.connections.first()
-  filePathCurrentPlay = data.filePath
-  playDiscordSound(connection, data.filePath, data.volume, data.offset)
+  if (data.loop) {
+    filePathCurrentPlay = data.filePath
+    playDiscordSoundLoop(connection, data.filePath, data.volume, data.offset)
+  } else {
+    playDiscordSoundOnce(connection, data.filePath, data.volume, data.offset)
+  }
 })
 
 ipcMain.on('discordStop', (event, data) => {
