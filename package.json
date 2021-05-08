@@ -43,7 +43,7 @@
     "electron-json-storage": "^4.1.6",
     "ffmpeg-static": "^4.2.4",
     "id3-parser": "^2.0.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "lodash.assign": "^4.2.0",
     "vue": "^2.6.10",
     "vue-router": "^3.1.3",
