@@ -1,9 +1,6 @@
 name: Build for check
 
-on:
-  pull_request:
-    paths:
-      - "src/**"
+on: [pull_request]
 
 jobs:
   build:
