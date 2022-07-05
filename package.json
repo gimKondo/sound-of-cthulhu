@@ -37,7 +37,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.8.0",
     "core-js": "^3.3.2",
     "discord.js": "^12.2.0",
     "electron-json-storage": "^4.1.6",
