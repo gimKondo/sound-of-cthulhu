@@ -1,7 +1,7 @@
-const path = require('path')
 const electron = require('electron')
 const { ipcRenderer } = require('electron')
 const fs = electron.remote.require('fs')
+const { extractFileBody } = require('../services/FileOperator')
 const DISCORD_DEVICE_ID = 'Discord API'
 
 export default {
@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     name () {
-      return path.basename(this.filePath, '.mp3')
+      return extractFileBody(this.filePath)
     }
   }
 }
