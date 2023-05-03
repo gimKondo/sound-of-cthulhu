@@ -37,7 +37,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
-    "@discordjs/opus": "^0.3.2",
+    "@discordjs/opus": "^0.9.0",
     "core-js": "^3.3.2",
     "discord.js": "^12.2.0",
     "electron-json-storage": "^4.1.6",
@@ -63,7 +63,7 @@
     "electron": "^9.2.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
-    "node-sass": "^4.9.0",
+    "node-sass": "^8.0.0",
     "sass-loader": "^7.1.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
