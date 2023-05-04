@@ -1,24 +1,19 @@
 name: Build for check
 
-on:
-  pull_request:
-    paths:
-      - "src/**"
-      - "package.json"
-      - "yarn.lock"
+on: [pull_request]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
 
     env:
-      MAC_OS_VERSION: macOS-latest
+      MAC_OS_VERSION: macOS-10.15
       WIN_OS_VERSION: windows-latest
 
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
-        os: [macOS-latest, windows-latest]
+        os: [macOS-10.15, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
