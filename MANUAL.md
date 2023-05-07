@@ -10,10 +10,13 @@
 2. [Developer Portal](https://discord.com/developers/applications)でApplicationを作成し、Botを追加する
     - [公式リファレンス](https://discordjs.guide/preparations/setting-up-a-bot-application.html)を参照
     - アプリ名やBot名、アイコン等は任意で良い
-3. BotのTokenを取得して、控えておく
+3. 左のBotメニューからPrivileged Gateway Intentsを設定する
+    1. SETTINGS-Botを開く
+    2. Privileged Gateway IntentsのMESSAGE CONTENT INTENTをONにする
+4. BotのTokenを取得して、控えておく
     1. SETTINGS-Botを開く
     2. Build-A-BotのTOKENにあるCopyボタンを押すとクリップボードにコピーされる
-4. 招待リンクを作成する
+5. 招待リンクを作成する
     1. SETTINGS-OAuth2を開く
     2. SCOPESのbotをチェック
     3. BOT PERMISSIONSで以下をチェック
@@ -25,9 +28,9 @@
           - Connect
           - Speak
     4. SCOPES欄に招待リンクが作成される
-5. 招待リンクをブラウザで開く
-6. 利用したいDiscordサーバを選択し、追加する
-7. 対象のサーバに追加されたことを確認する
+6. 招待リンクをブラウザで開く
+7. 利用したいDiscordサーバを選択し、追加する
+8. 対象のサーバに追加されたことを確認する
     - 対象サーバのgeneralに、追加された旨のメッセージがポストされることで確認できる
 
 ### Tokenの設定方法
