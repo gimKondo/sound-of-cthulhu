@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
-        os: [macOS-10.15, windows-latest]
+        os: [macOS-11, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
