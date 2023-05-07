@@ -27,4 +27,4 @@ runs:
         files: ${{ inputs.file_path }}}
         tag_name: ${{ inputs.release_version }}
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ inputs.github_token }}
