@@ -1,54 +1,35 @@
 name: Build for check
 
-on:
-  pull_request:
-    paths:
-      - "src/**"
+on: [pull_request]
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
 
-    env:
-      MAC_OS_VERSION: macOS-10.15
-      WIN_OS_VERSION: windows-2016
-
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
-        os: [macOS-10.15, windows-2016]
+        os: [macOS-11, windows-latest]
 
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Cache node modules
-        uses: actions/cache@v2
-        env:
-          cache-name: cache-node-modules
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
-      - name: Use Node.js 12.x
-        uses: actions/setup-node@v1
-        with:
-          node-version: v12.18.2
+          cache: "yarn"
+          node-version: v16.x
       - name: yarn install
         run: |
           yarn install
           yarn postinstall
 
       - name: Build for macOS
-        if: matrix.os == env.MAC_OS_VERSION
+        if: startsWith(matrix.os, 'mac')
         run: yarn electron:build --publish never --mac
         env:
           USE_HARD_LINKS: false
 
       - name: Build for Windows
-        if: matrix.os == env.WIN_OS_VERSION
+        if: startsWith(matrix.os, 'win')
         run: yarn electron:build --publish never --win
         env:
           USE_HARD_LINKS: false
