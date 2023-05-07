@@ -29,30 +29,20 @@ jobs:
           yarn install
           yarn postinstall
 
-      - name: Build for macOS
-        if: startsWith(matrix.os, 'mac')
-        run: yarn electron:build --publish never --mac
-        env:
-          USE_HARD_LINKS: false
       - name: Create GitHub Release(Mac)
         if: startsWith(matrix.os, 'mac')
-        uses: softprops/action-gh-release@v1
+        uses: ./.github/actions/create-release
         with:
-          files: "dist_electron/sound-of-cthulhu*.dmg"
-          tag_name: ${{ env.RELEASE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_version: ${{ env.RELEASE_VERSION }}
+          os_name: "mac"
+          file_path: "dist_electron/sound-of-cthulhu*.dmg"
 
-      - name: Build for Windows
+      - name: Create GitHub Release(Win)
         if: startsWith(matrix.os, 'win')
-        run: yarn electron:build --publish never --win
-        env:
-          USE_HARD_LINKS: false
-      - name: Create GitHub Release(Windows)
-        if: startsWith(matrix.os, 'win')
-        uses: softprops/action-gh-release@v1
+        uses: ./.github/actions/create-release
         with:
-          files: "dist_electron/sound-of-cthulhu*.exe"
-          tag_name: ${{ env.RELEASE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_version: ${{ env.RELEASE_VERSION }}
+          os_name: "win"
+          file_path: "dist_electron/sound-of-cthulhu*.exe"
