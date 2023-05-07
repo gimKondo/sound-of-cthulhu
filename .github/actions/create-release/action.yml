@@ -1,0 +1,30 @@
+name: Create Release
+description: Create release for each OS
+inputs:
+  github_token:
+    description: "pass `secrets.GITHUB_TOKEN`"
+    required: true
+  release_version:
+    description: "release version(git tag)"
+    required: true
+  os_name:
+    description: "OS name(mac or win)"
+    required: true
+  file_path:
+    description: "File path to upload(dist_electron/sound-of-cthulhu*.dmg or dist_electron/sound-of-cthulhu*.exe)"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Build
+      shell: bash
+      run: yarn electron:build --publish never --${{ inputs.os_name }}
+      env:
+        USE_HARD_LINKS: "false"
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: ${{ inputs.file_path }}}
+        tag_name: ${{ inputs.release_version }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
