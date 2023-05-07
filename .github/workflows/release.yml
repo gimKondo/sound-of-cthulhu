@@ -8,14 +8,10 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
-    env:
-      MAC_OS_VERSION: macOS-10.15
-      WIN_OS_VERSION: windows-latest
-
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
-        os: [macOS-10.15, windows-latest]
+        os: [macOS-11, windows-latest]
 
     steps:
       - uses: actions/checkout@v3
@@ -33,30 +29,20 @@ jobs:
           yarn install
           yarn postinstall
 
-      - name: Build for macOS
-        if: matrix.os == env.MAC_OS_VERSION
-        run: yarn electron:build --publish never --mac
-        env:
-          USE_HARD_LINKS: false
       - name: Create GitHub Release(Mac)
-        if: matrix.os == env.MAC_OS_VERSION
-        uses: softprops/action-gh-release@v1
+        if: startsWith(matrix.os, 'mac')
+        uses: ./.github/actions/create-release
         with:
-          files: "dist_electron/sound-of-cthulhu*.dmg"
-          tag_name: ${{ env.RELEASE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_version: ${{ env.RELEASE_VERSION }}
+          os_name: "mac"
+          file_path: "dist_electron/sound-of-cthulhu*.dmg"
 
-      - name: Build for Windows
-        if: matrix.os == env.WIN_OS_VERSION
-        run: yarn electron:build --publish never --win
-        env:
-          USE_HARD_LINKS: false
-      - name: Create GitHub Release(Windows)
-        if: matrix.os == env.WIN_OS_VERSION
-        uses: softprops/action-gh-release@v1
+      - name: Create GitHub Release(Win)
+        if: startsWith(matrix.os, 'win')
+        uses: ./.github/actions/create-release
         with:
-          files: "dist_electron/sound-of-cthulhu*.exe"
-          tag_name: ${{ env.RELEASE_VERSION }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          release_version: ${{ env.RELEASE_VERSION }}
+          os_name: "win"
+          file_path: "dist_electron/sound-of-cthulhu*.exe"
