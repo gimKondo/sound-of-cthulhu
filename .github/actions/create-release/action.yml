@@ -24,7 +24,7 @@ runs:
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
       with:
-        files: ${{ inputs.file_path }}}
+        files: ${{ inputs.file_path }}
         tag_name: ${{ inputs.release_version }}
       env:
         GITHUB_TOKEN: ${{ inputs.github_token }}
