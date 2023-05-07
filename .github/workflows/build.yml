@@ -6,10 +6,6 @@ jobs:
   build:
     runs-on: ${{ matrix.os }}
 
-    env:
-      MAC_OS_VERSION: macOS-10.15
-      WIN_OS_VERSION: windows-latest
-
     strategy:
       matrix:
         # この中でenvにアクセスできないので直書き
@@ -27,13 +23,13 @@ jobs:
           yarn postinstall
 
       - name: Build for macOS
-        if: matrix.os == env.MAC_OS_VERSION
+        if: startsWith(matrix.os, 'mac')
         run: yarn electron:build --publish never --mac
         env:
           USE_HARD_LINKS: false
 
       - name: Build for Windows
-        if: matrix.os == env.WIN_OS_VERSION
+        if: startsWith(matrix.os, 'win')
         run: yarn electron:build --publish never --win
         env:
           USE_HARD_LINKS: false
