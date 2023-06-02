@@ -56,10 +56,10 @@
 import OutputDeviceSelect from '@/components/OutputDeviceSelect.vue'
 import BGMList from '@/components/BGMList.vue'
 import SEList from '@/components/SEList.vue'
+import { extractFileBody } from '@/services/FileOperator.js'
 
 const remote = require('electron').remote
 const { dialog } = require('electron').remote
-const path = require('path')
 const storage = require('electron-json-storage')
 
 const { ipcRenderer } = require('electron')
@@ -160,7 +160,10 @@ export default {
       const options = {
         title: 'File open',
         filters: [
-          { name: 'sound', extensions: ['mp3'] }
+          {
+            name: 'sound',
+            extensions: ['.mp3', '.m4a', '.aac', '.wav', '.flac']
+          }
         ],
         properties: ['openFile']
       }
@@ -175,7 +178,7 @@ export default {
     removeSound (sounds, targetIndex) {
       const targetFilePath = sounds[targetIndex].filePath
       const removedSounds = sounds.filter((_, i) => i !== targetIndex)
-      this.showSnackbar(`"${path.basename(targetFilePath, '.mp3')}" is removed`, 'info')
+      this.showSnackbar(`"${extractFileBody(targetFilePath)}" is removed`, 'info')
       return removedSounds
     },
     applyVolume (sounds, targetIndex, volume) {
