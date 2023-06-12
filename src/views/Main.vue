@@ -67,7 +67,7 @@ const { ipcRenderer } = require('electron')
 const initialVolume = 50
 
 export default {
-  name: 'Main',
+  name: 'MainVue',
   components: {
     OutputDeviceSelect,
     BGMList,
