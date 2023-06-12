@@ -50,6 +50,8 @@
     "vuetify": "^1.5.5"
   },
   "devDependencies": {
+    "@babel/core": "^7.22.5",
+    "@babel/eslint-parser": "^7.22.5",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-e2e-nightwatch": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
@@ -57,12 +59,10 @@
     "@vue/cli-service": "^5.0.8",
     "@vue/eslint-config-standard": "^4.0.0",
     "@vue/test-utils": "1.0.0-beta.29",
-    "babel-core": "7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "electron": "^9.2.0",
-    "eslint": "^5.8.0",
-    "eslint-plugin-vue": "^5.0.0",
+    "eslint": "^8.42.0",
+    "eslint-plugin-vue": "^9.14.1",
     "node-sass": "^9.0.0",
     "sass-loader": "^7.1.0",
     "stylus": "^0.59.0",
@@ -86,7 +86,7 @@
     ],
     "rules": {},
     "parserOptions": {
-      "parser": "babel-eslint"
+      "parser": "@babel/eslint-parser"
     }
   },
   "postcss": {
