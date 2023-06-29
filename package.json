@@ -63,7 +63,7 @@
     "babel-jest": "^23.6.0",
     "electron": "^9.2.0",
     "eslint": "^8.43.0",
-    "eslint-plugin-vue": "^9.14.1",
+    "eslint-plugin-vue": "^9.15.1",
     "node-sass": "^9.0.0",
     "sass-loader": "^13.3.2",
     "stylus": "^0.59.0",
