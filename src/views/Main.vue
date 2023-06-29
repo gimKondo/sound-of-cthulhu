@@ -201,7 +201,7 @@ export default {
   data () {
     const context = new AudioContext()
     return {
-      context: context,
+      context,
       channelSplitter: context.createChannelSplitter(),
       soundListName: 'default',
       availableOutputDevices: [],

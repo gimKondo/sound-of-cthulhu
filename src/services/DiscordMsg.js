@@ -1,4 +1,3 @@
-
 // Discord message type ID
 const MSG_TYPE_INVALID = -1
 const MSG_TYPE_JOIN = 1
