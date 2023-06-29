@@ -45,7 +45,7 @@ export default {
     },
     startSource (offset) {
       if (this.isDiscordAPI(this.context.deviceId)) {
-        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset: offset })
+        ipcRenderer.send('discordPlay', { filePath: this.filePath, volume: this.volume, offset })
       } else {
         this.source.start(undefined, offset)
       }
